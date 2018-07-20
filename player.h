@@ -1,6 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include "character.h"
+
 class Player: public Character {
 	int maxHp;
 	int baseAtk;
@@ -13,7 +14,7 @@ class Player: public Character {
 		int getMaxHp() const;
 		int getBaseAtk() const;
 		int getBaseDef() const;
-		int getGold();
+		int getGold() const;
 		int setGold();
 		void die();
 }

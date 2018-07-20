@@ -1,5 +1,6 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
+#include "object.h";
 
 class Character: public Object {
 	std::string name;
@@ -16,7 +17,6 @@ class Character: public Object {
 		int getHp() const;
 		int getAtk() const;
 		int getDef() const;
-		//string move(Cell to);
 		void strike(Character &other) virtual;
 		void beStruckBy(Character &other) virtual;
 }
