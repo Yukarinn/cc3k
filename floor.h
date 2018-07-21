@@ -9,9 +9,8 @@ class Enemy;
 class Object;
 
 class Floor {
-    Player * player;
     bool isFrozen;
-    Object * theFloor[30][79];
+    Cell * theFloor[30][79];
     vector<vector<Cell *>> chambers; // vector of vector of chambers
     vector<Enemy *> mobs; //
     
@@ -22,10 +21,9 @@ class Floor {
     void spawnEnemies();
     
 Public:
-    Floor(); // spawn everything, shared pointer?
+    Floor(Cell *cleanFloor[30][79]); // spawn everything, shared pointer?
     ~Floor();
     void draw(); // display
-    void clear();  // clear floor
     void mobAct();
 }
 
