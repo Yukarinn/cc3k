@@ -8,14 +8,14 @@ class Player: public Character {
 	int baseDef;
 	int gold;
 	public: 
-		Player(std::string name, int hp, int atk, int def, int max_hp, int base_hp, int base_def);
+		Player(std::string name, int hp, int atk, int def, int max_hp, int base_atk, int base_def);
 		~Player();
 		virtual void reset() = 0;
 		int getMaxHp() const;
 		int getBaseAtk() const;
 		int getBaseDef() const;
 		int getGold() const;
-		int setGold();
+		void setGold(int gold);
 		void die();
 }
 #endif

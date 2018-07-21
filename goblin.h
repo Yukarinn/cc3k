@@ -2,6 +2,7 @@
 #define GOBLIN_H
 #include "player.h"
 
+class Orc;
 class Goblin: public Player {
 	public: 
 		Goblin();

@@ -8,7 +8,7 @@ class Character: public Object {
 	int atk;
 	int def;
 	public: 
-		Character(std::string name, int hp, int atk, int def);
+		Character(std::string name, int hp, int atk, int def, ObjectType objectType);
 		~Character();	
 		std::string getName() const;
 		void setHp(int hp);
