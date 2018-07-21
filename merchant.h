@@ -7,5 +7,6 @@ class Merchant: public Enemy {
 		Merchant();
 		~Merchant();
 		void defeat() override;
+		void beStruckBy(Character &other) override;
 }
 #endif

@@ -20,5 +20,6 @@ public:
     int getGold() const;
     int setGold();
     void die();
+
 }
 #endif
