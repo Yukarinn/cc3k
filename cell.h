@@ -14,11 +14,13 @@ class Cell {
     int whichChamber = 5; // 0-4 for chamber, 5 for non-chamber
                             // will never use this if non chamber
 	public:
-		Cell(Terrain terrain, Object * obj, int r, int c, int whichChamber);
+		Cell(Terrain terrain, int r, int c, int whichChamber);
 		~Cell();	
 		Terrain getTerrain() const;
 		pair<int, int> getPos() const;
 		bool canMoveTo() const;
+		void setObject(Object* obj);
+		Object* getObject() const;
 }
 
 #endif

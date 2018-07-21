@@ -21,3 +21,11 @@ Cell::getTerrain() const {
 bool canMoveTo() const {
 	return terrain == Terrain::Door || terrain == Terrain::Floor || terrain == Terrain::Passage;
 }
+
+void setObject(Object* obj) {
+	this->obj = obj;
+}
+
+Object* getObject() const {
+	return obj;
+}
