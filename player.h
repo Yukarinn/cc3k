@@ -14,9 +14,6 @@ public:
     int getMaxHp() const;
     int getBaseAtk() const;
     int getBaseDef() const;
-    void setHp(int n);
-    void setAtk(int n);
-    void setDef(int n);
     int getGold() const;
     int setGold();
     void die();

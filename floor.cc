@@ -2,6 +2,7 @@
 #include "floor.h"
 #include "cell.h"
 #include "player.h"
+#include "potion.h"
 
 void Floor::spawnPlayer(Object * thePlayer, int chamberNum)
 {
@@ -25,7 +26,30 @@ void Floor::spawnStairs(int chamberNum)
     // WHAT IS STAIRS???
     //chambers[chamberNum][whichCell]->
 }
-void Floor::spawnPotions();
+void Floor::spawnPotions()
+{
+    for (int i=0; i<10; i++)
+    {
+        int whichChamber = rand() % 5;
+        int whichCell = rand() % chambers[whichChamber].size();
+        int whichPotion = rand() % 6;
+        vector <PotionType> potionTypes = {PotionType::RH,
+            PotionType::BA,
+            PotionType::BD,
+            PotionType::PH,
+            PotionType::WA,
+            PotionType::WD}
+        if (! chambers[whichChamber][whichCell]->obj) // nothings on the floor
+        {
+            chambers[whichChamber][whichCell]->obj = new Potion(potionTypes[whichPotion]);
+        }
+        else
+        {
+            i--; // occupied, do it again
+        }
+    }
+}
+
 void Floor::spawnGold();
 void Floor::spawnEnemies();
 
