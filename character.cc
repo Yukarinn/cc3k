@@ -1,3 +1,4 @@
+#include <cmath>
 #include "character.h";
 
 using namespace std;
@@ -35,10 +36,10 @@ int Character::getDef() const {
 }
 
 void Character::strike(Character &other) {
-
+	int dmg = ceil((100/(100+other.getDef()))*this->atk);
 }
 
 void Character::beStruckBy(Character &other) {
-
+	other.strike(*this);
 }
 
