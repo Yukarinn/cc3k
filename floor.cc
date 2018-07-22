@@ -142,6 +142,24 @@ Floor::Floor(Cell * cleanFloor[30][79], Player * thePlayer)
     spawnPotions();
     spawnGold();
     spawnEnemies(); // append to mob vector
+
+		for (int i = 0; i < 30; i ++) {
+			for (int j = 0; j < 79; j ++) {
+				for (int di = -1; di <= 1; di +) {
+					for (int dj = -1; dj <= 1; dj ++) {
+						int ni = i + di;
+						int nj = j + dj;
+						if (ni < 0 || nj < 0 || ni >= 79 || nj >= 79)
+							continue;
+						if (theFloor[ni][nj]->getTerrainType() == TerrainType::Wall)
+							continue;
+						if (theFloor[ni][nj]->getTerrainType() == TerrainType::Empty)
+							continue;
+						theFloor[i][j]->addNeighbour(theFloor[ni][nj]);
+					}
+				}
+			}
+		}
 }
 
 // display

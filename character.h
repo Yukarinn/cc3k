@@ -1,15 +1,19 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
-#include "object.h";
+#include "object.h"
+#include <string>
 
 class Vampire;
 class Elf;
+class Goblin;
+class Halfling;
 
 class Character: public Object {
-	std::string name;
-	int hp;
-	int atk;
-	int def;
+	protected:
+		std::string name;
+		int hp;
+		int atk;
+		int def;
 	public: 
 		Character(std::string name, int hp, int atk, int def, ObjectType objectType);
 		~Character();	
@@ -20,12 +24,12 @@ class Character: public Object {
 		int getHp() const;
 		int getAtk() const;
 		int getDef() const;
-		bool strike(Character& other) virtual;
-		bool strike(Goblin& goblin) virtual;
+		virtual bool strike(Character& other);
+		virtual bool strike(Goblin& goblin);
 		bool strike(Halfling& other);
-		void beStruckBy(Character& other) virtual;
-		void beStruckBy(Vampire& other) virtual;
-		void beStruckBy(Elf& other) virtual;
-}
+		virtual void beStruckBy(Character& other);
+		virtual void beStruckBy(Vampire& other);
+		virtual void beStruckBy(Elf& other);
+};
 
 #endif

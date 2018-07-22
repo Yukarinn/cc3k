@@ -11,10 +11,10 @@ ObjectType Object::getType() {
 	return type;
 }
 
-Cell* getCell() {
+Cell* Object::getCell() const {
 	return cell;
 }
 
-void setCell(Cell* cell) {
+void Object::setCell(Cell* cell) {
 	this->cell = cell;
 }

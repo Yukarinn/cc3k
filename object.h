@@ -3,19 +3,19 @@
 
 class Cell;
 
-enum ObjectType {
+enum class ObjectType {
 	Potion, Enemy, Player, Treasure, Empty
 };
 
 class Object {
-	ObjectType type;
-	Cell *cell;
+	protected:
+		ObjectType type;
+		Cell* cell;
 	public:
 		Object(ObjectType type);
 		~Object();		
 		ObjectType getType();
 		Cell* getCell() const;
 		void setCell(Cell * cell);
-}
-
+};
 #endif

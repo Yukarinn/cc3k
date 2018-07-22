@@ -8,5 +8,5 @@ class Drow: public Player {
 		Drow();
 		~Drow();
 		void beStruckBy(Elf& other) override;
-}
+};
 #endif

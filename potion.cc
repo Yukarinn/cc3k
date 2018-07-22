@@ -1,5 +1,5 @@
-#include "potion.h";
-#include "player.h";
+#include "potion.h"
+#include "player.h"
 #include <vector>
 
 using namespace std;
@@ -13,7 +13,7 @@ PotionType Potion::getPotionType() const {
 }
 
 string Potion::getEffect() const {
-	switch(PotionType) {
+	switch(potionType) {
 		case PotionType::RH:
 			return "Plus HP";
 		case PotionType::BA:

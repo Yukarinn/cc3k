@@ -5,8 +5,8 @@
 
 using namespace std;
 
-Player::Player(string name, int hp, int atk, int def, int max_hp, int base_hp, int base_def):
-	Character(name, hp, atk, def, ObjectType::Player), max_hp{max_hp}, base_hp{base_hp}, base_def{base_def} {}
+Player::Player(string name, int hp, int atk, int def, int maxHp, int baseAtk, int baseDef):
+	Character(name, hp, atk, def, ObjectType::Player), maxHp{maxHp}, baseAtk{baseAtk}, baseDef{baseDef} {}
 
 Player::~Player() {}
 
@@ -19,7 +19,7 @@ int Player::getBaseAtk() const {
 }
 
 int Player::getBaseDef() const {
-	return baesDef;
+	return baseDef;
 }
 
 int Player::getGold() const {
@@ -35,46 +35,50 @@ void Player::die() {
 }
 
 void Player::reset() {
-	this->atk = baseAtk;
-	this->def = baseDef;
+	this->setAtk(baseAtk);
+	this->setDef(baseDef);
 }
 
-void Player::drink(Potion& potion) {
-	switch(potion.getPotionType()) {
+void Player::drink(Potion* potion) {
+	switch(potion->getPotionType()) {
 		case PotionType::RH:
-			hp += 10;
+			setHp(getHp() + 10);
 			return;
 		case PotionType::BA:
-			atk += 10;
+			setAtk(getAtk() + 10);
 			return;
 		case PotionType::BD:
-			def += 10;
+			setDef(getDef() + 10);
 			return;
 		case PotionType::PH:
-			hp -= 10;
+			setHp(getHp() - 10);
 			return;
 		case PotionType::WA:
-			atk -= 10;
+			setAtk(getAtk() - 10);
 			return;
 		case PotionType::WD:
-			def -= 10;
+			setDef(getDef() - 10);
 			return;
 	}
 }
 
-void Player::pick(Treasure& treasure) {
-	switch (treasure.getTreasureType()) {
+void Player::pick(Treasure* treasure) {
+	switch (treasure->getTreasureType()) {
 		case TreasureType::SM:
 			gold ++;
+			delete treasure;
 			return;
 		case TreasureType::NO:
 			gold += 2;
+			delete treasure;
 			return;
 		case TreasureType::ME:
 			gold += 4;
+			delete treasure;
 			return;
 		case TreasureType::HD:
 			gold += 6;
+			delete treasure;
 			return;
 		case TreasureType::HN:
 			return;
@@ -82,9 +86,9 @@ void Player::pick(Treasure& treasure) {
 }
 
 void Player::move(Cell* cell) {
-	Cell* prev = this.cell;
-	if (cell->getObject().ObjectType == ObjectType::Treasure) {
-		pick(*(cell->obj));
+	Cell* prev = this->cell;
+	if (cell->getObject()->getType() == ObjectType::Treasure) {
+		pick(static_cast<Treasure*>(cell->getObject()));
 	}
 	cell->setObject(this);
 	prev->clearObject();

@@ -1,13 +1,12 @@
 #ifndef POTION_H
 #define POTION_H
 #include <vector>
+#include <string>
 #include "item.h"
 
-class Player;
-
-enum PotionType {
-	RH, BA, BD, PH, WA, WD;
-}
+enum class PotionType {
+	RH, BA, BD, PH, WA, WD
+};
 
 class Potion: public Item {
 	PotionType potionType;
@@ -17,6 +16,6 @@ class Potion: public Item {
 		~Potion();
 		PotionType getPotionType() const;
 		std::string getEffect() const;
-}
+};
 
 #endif

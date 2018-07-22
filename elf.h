@@ -5,5 +5,5 @@ class Elf: public Enemy {
 	public: 
 		Elf();
 		~Elf();
-}
+};
 #endif

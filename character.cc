@@ -1,6 +1,10 @@
 #include <cmath>
-#include "character.h";
-#include "vampire.h";
+#include <iostream>
+#include "character.h"
+#include "vampire.h"
+#include "goblin.h"
+#include "halfling.h"
+#include "elf.h"
 
 using namespace std;
 
@@ -42,8 +46,9 @@ bool Character::strike(Character& other) {
 	return true;
 }
 
-void Character::strike(Goblin& other) {
-	other.strike(*this);
+bool Character::strike(Goblin& other) {
+	int dmg = ceil((100/(100+other.getDef()))*this->atk);
+	other.setHp(other.getHp() - dmg);
 	return true;
 }
 

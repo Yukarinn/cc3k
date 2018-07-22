@@ -9,5 +9,5 @@ class Dwarf: public Enemy {
 		Dwarf();
 		~Dwarf();
 		void beStruckBy(Vampire &other);
-}
+};
 #endif

@@ -1,5 +1,5 @@
-#ifndef game_h
-#define game_h
+#ifndef GAME_H
+#define GAME_H
 
 class Direction;
 class Floor;

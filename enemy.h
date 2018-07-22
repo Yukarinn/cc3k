@@ -8,6 +8,6 @@ class Enemy: public Character {
 		~Enemy();
 		virtual void drop();
 		virtual void act();
-}
+};
 
 #endif

@@ -2,11 +2,9 @@
 #define TREASURE_H
 #include "item.h"
 
-class Player;
-
-enum TreasureType {
+enum class TreasureType {
 	SM, NO, ME, HD, HN // small, normal, merchant, hoard dragon, hoard none
-}
+};
 
 class Treasure: public Item {
 	TreasureType treasureType;
@@ -15,6 +13,6 @@ class Treasure: public Item {
 		~Treasure();
 		TreasureType getTreasureType() const;
 		
-}
+};
 
 #endif

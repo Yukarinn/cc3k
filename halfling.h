@@ -5,6 +5,6 @@
 class Halfling: public Enemy {
 	public: 
 		Halfling();
-		~Halfing();
-}
+		~Halfling();
+};
 #endif

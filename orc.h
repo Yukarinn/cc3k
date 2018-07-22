@@ -8,5 +8,5 @@ class Orc: public Enemy {
 		Orc();
 		~Orc();
 		bool strike(Goblin& other) override;
-}
+};
 #endif
