@@ -10,6 +10,7 @@ class Cell;
 enum Direction {
     N, NE, E, SE, S, SW, W, NW
 };
+
 class Game {
     Floor *floor;
     Cell * cleanFloor[30][79];
