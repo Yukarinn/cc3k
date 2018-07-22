@@ -20,8 +20,7 @@ void Floor::spawnPlayer(Object * thePlayer, int chamberNum)
 void Floor::spawnStairs(int chamberNum)
 {
     int whichCell = rand() % chambers[chamberNum].size(); // choose cell
-    // WHAT IS STAIRS???
-    //chambers[chamberNum][whichCell]->
+    chambers[chamberNum][whichCell]->setStairs();
 }
 void Floor::spawnPotions()
 {
@@ -36,7 +35,7 @@ void Floor::spawnPotions()
             PotionType::PH,
             PotionType::WA,
             PotionType::WD}
-        if (! chambers[whichChamber][whichCell]->obj) // nothings on the floor
+        if (! chambers[whichChamber][whichCell]->getObject) // nothings on the floor
         {
             chambers[whichChamber][whichCell]->setObject(new Potion(potionTypes[whichPotion]));
         }
@@ -55,7 +54,7 @@ void Floor::spawnGold()
         int whichCell = rand() % chambers[whichChamber].size();
         int whichTreasure = rand() % 8;
 
-        if (!(chambers[whichChamber][whichCell]->obj))
+        if (!(chambers[whichChamber][whichCell]->getObject()))
         {
             if (whichTreasure % 2 == 0 || whichTreasure == 1) // 5/8 chance
             {
@@ -85,7 +84,7 @@ void Floor::spawnEnemies()
         int whichCell = rand() % chambers[whichChamber].size();
         int whichEnemy = rand() % 18;
         
-        if (!(chambers[whichChamber][whichCell]->obj))
+        if (!(chambers[whichChamber][whichCell]->getObject()))
         {
             if (whichEnemy < 4) // 2/9 human
             {
@@ -111,15 +110,17 @@ void Floor::spawnEnemies()
             {
                 chambers[whichChamber][whichCell]->setObject(new Merchant());
             }
-            mobs.emplace_back(chambers[whichChamber][whichCell]);
+            mobs.emplace_back(chambers[whichChamber][whichCell]->getObject());
         }
         else
         {
             i--; // occupied, try again
         }
+    }
 }
 
-Floor::Floor(Cell * cleanFloor[30][79], Object * thePlayer) {
+Floor::Floor(Cell * cleanFloor[30][79], Player * thePlayer)
+{
     isFrozen = false;
     // copy the floor
     for (int i=0; i<30; i++)
@@ -129,7 +130,7 @@ Floor::Floor(Cell * cleanFloor[30][79], Object * thePlayer) {
             theFloor[i][j] = new Cell(cleanFloor[i][j]->getTerrrian(),
                                       cleanFloor[i][j]->getr(),
                                       cleanFloor[i][j]->getc());
-
+            
             if (cleanFloor[i][j]->getTerrian == Terrian::Chamber)
             {
                 theFloor[i][j]->chamberNumber = cleanFloor[i][j]->getChamberNumber;
@@ -170,3 +171,10 @@ void Floor::mobAct()
     }
 }
 
+Floor::~Floor()
+{
+    for (int i=0; i<30; i++)
+        for (int j=0; j<79; j++)
+            delete theFloor[i][j];
+}
+    
