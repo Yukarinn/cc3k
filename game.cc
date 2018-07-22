@@ -1,5 +1,7 @@
 #include "game.h"
 #include "player.h"
+#include "cell.h"
+#include "floor.h"
 
 Game::Game()
 {
@@ -8,29 +10,53 @@ Game::Game()
 
 void Game::startGame()
 {
-    player = new Player();
-    floor0 = new Floor(cleanFloor, player);
+    //player // new race
+    floor = new Floor(cleanFloor, player);
 }
 
-void Game::endGame(bool isEnd);
-void Game::nextlevel()
+void Game::endGame()
+{
+    
+}
+
+void Game::nextLevel()
 {
     level++;
     delete floor;
+    /*
+    if (readFloor)
+    {
+        readfloors();
+    }
+     */
     floor = new Floor(cleanFloor, player);
 }
-void Game::toggleFreeze();
-void Game::usePotion(Direction dir);
-void Game::playerAttack(Direction dir);
+void Game::toggleFreeze()
+{
+    // mob.dontact() 
+}
+void Game::usePotion(Direction dir)
+{
+    
+}
+
+void Game::playerAttack(Direction dir)
+{
+    
+}
+
 void Game::playerMove(Direction dir)
 {
-    //move the player
+    Cell *moveto = findCell(dir);
+    player->move(moveto);
     // check if stairs
-    if ()
+    if (moveto->getTerrain() == Terrain::Stairs)
     {
         // set stairs->player object to nullptr
+        moveto->setObject(nullptr);
+        nextLevel();
     }
-    nextlevel(player)
+    
 }
 void Game::readFloorMode()
 {
@@ -40,6 +66,18 @@ void Game::readFloors(std::string fileName)
 {
     
 }
-std::string Game::displayMenu();
-std::string Game::displayAction();
-Player * Game::getPlayer();
+
+std::string Game::displayMenu()
+{
+    
+}
+
+std::string Game::displayAction()
+{
+    
+}
+
+Player * Game::getPlayer()
+{
+    
+}
