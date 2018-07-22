@@ -19,14 +19,19 @@ int Player::getBaseDef() const {
 	return baesDef;
 }
 
-int getGold() const {
+int Player::getGold() const {
 	return gold;
 }
 
-void setgold(int gold) {
+void Player::setGold(int gold) {
 	this->gold = gold;
 }
 
-void die() {
+void Player::die() {
 
+}
+
+void Player::reset() {
+	this->atk = baseAtk;
+	this->def = baseDef;
 }

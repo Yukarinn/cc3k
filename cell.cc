@@ -19,7 +19,7 @@ Cell::getTerrain() const {
 }
 
 bool canMoveTo() const {
-	return terrain == Terrain::Door || terrain == Terrain::Floor || terrain == Terrain::Passage;
+	return terrain == Terrain::Stairs || terrain == Terrain::Door || terrain == Terrain::Chamber || terrain == Terrain::Passage;
 }
 
 void setObject(Object* obj) {
@@ -28,4 +28,8 @@ void setObject(Object* obj) {
 
 Object* getObject() const {
 	return obj;
+}
+
+int getChamberNumber() const {
+	return chamberNumber;
 }

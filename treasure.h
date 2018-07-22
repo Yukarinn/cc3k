@@ -5,7 +5,7 @@
 class Player;
 
 enum TreasureType {
-	SM, NO, ME, DR
+	SM, NO, ME, HD, HN // small, normal, merchant, hoard dragon, hoard none
 }
 
 class Treasure: public Item {
@@ -14,6 +14,7 @@ class Treasure: public Item {
 		Treasure(TreasureType treasureType);
 		~Treasure();
 		TreasureType getTreasureType() const;
+		
 }
 
 #endif

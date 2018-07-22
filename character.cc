@@ -1,5 +1,6 @@
 #include <cmath>
 #include "character.h";
+#include "vampire.h";
 
 using namespace std;
 
@@ -35,11 +36,39 @@ int Character::getDef() const {
 	return def;
 }
 
-void Character::strike(Character &other) {
+bool Character::strike(Character& other) {
 	int dmg = ceil((100/(100+other.getDef()))*this->atk);
+	other.setHp(other.getHp() - dmg);
+	return true;
 }
 
-void Character::beStruckBy(Character &other) {
+void Character::strike(Goblin& other) {
+	other.strike(*this);
+	return true;
+}
+
+
+bool Character::strike(Halfling& other) {
+	if (rand() % 2) {
+		int dmg = ceil((100/(100+other.getDef()))*this->atk);
+		other.setHp(other.getHp() - dmg);
+		return true;
+	} 
+	cout << "attack missed" << endl;
+	return false;
+	
+}
+
+void Character::beStruckBy(Character& other) {
 	other.strike(*this);
 }
 
+void Character::beStruckBy(Vampire& other) {
+	if (other.strike(*this))
+		other.setHp(other.getHp() + 5);
+}
+
+void Character::beStruckBy(Elf& other) {
+	other.strike(*this);
+	other.strike(*this);
+}

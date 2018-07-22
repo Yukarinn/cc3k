@@ -9,3 +9,11 @@ Dragon::~Dragon() {}
 void Dragon::defeat() {
 
 }
+
+Treasure* Dragon::getHoard() const {
+	return hoard;
+}
+
+void Dragon::setHoard(Treasure* hoard) {
+	this->hoard = hoard;
+}

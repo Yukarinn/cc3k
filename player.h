@@ -2,6 +2,9 @@
 #define PLAYER_H
 #include "character.h"
 
+class Treasure;
+class Potion;
+
 class Player: public Character {
     int maxHp;
     int baseAtk;
@@ -10,13 +13,15 @@ class Player: public Character {
 public:
     Player(std::string name, int hp, int atk, int def, int max_hp, int base_hp, int base_def);
     ~Player();
-    virtual void reset() = 0;
+    void reset();
     int getMaxHp() const;
     int getBaseAtk() const;
     int getBaseDef() const;
     int getGold() const;
     int setGold();
     void die();
+		void pick(Treasure& treasure);
+		void drink(Potion& potion);
 
 }
 #endif
