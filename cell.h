@@ -7,10 +7,6 @@ enum Terrain {
 	Stairs, Wall, Door, Empty, Passage, Chamber
 };
 
-enum Direction {
-    N, NE, E, SE, S, SW, W, NW
-};
-
 class Cell {
     Terrain terrain;
     Object * obj = nullptr;
