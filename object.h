@@ -13,7 +13,7 @@ class Object {
 		Cell* cell;
 	public:
 		Object(ObjectType type);
-		~Object();		
+		virtual ~Object();		
 		ObjectType getType();
 		Cell* getCell() const;
 		void setCell(Cell * cell);

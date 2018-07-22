@@ -88,8 +88,9 @@ void Player::pick(Treasure* treasure) {
 void Player::move(Cell* cell) {
 	Cell* prev = this->cell;
 	if (cell->getObject()->getType() == ObjectType::Treasure) {
-		pick(static_cast<Treasure*>(cell->getObject()));
+		pick(dynamic_cast<Treasure*>(cell->getObject()));
 	}
 	cell->setObject(this);
 	prev->clearObject();
+	this->setCell(cell);
 }

@@ -1,5 +1,4 @@
 #include "vampire.h"
-#include "dwarf.h";
 
 using namespace std;
 

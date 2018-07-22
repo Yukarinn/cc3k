@@ -5,7 +5,7 @@
 class Item: public Object {
 	public:
 		Item(ObjectType type);
-		~Item();
+		virtual ~Item();
 };
 
 #endif

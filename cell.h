@@ -22,11 +22,13 @@ public:
     Terrain getTerrain() const;
     std::pair<int, int> getPos() const;
     bool canMoveTo() const;
-    void setObject(Object* obj);
+    bool enemyCanMoveTo() const;
+		void setObject(Object* obj);
 		void clearObject();
     Object* getObject() const;
     int getChamberNumber() const;
 		void addNeighbour(Cell* cell);
+		std::vector<Cell*> getNeighbours() const;
 		void setStairs();
 };
 

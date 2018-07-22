@@ -1,31 +1,37 @@
 #include "enemy.h"
 #include "treasure.h"
+#include "player.h"
+#include "cell.h"
+
 #include <cstdlib>
 
 using namespace std;
 
-Enemy::Enemy(string name, int hp, int atk, int def) Character(name, hp, atk, def) {}
+Enemy::Enemy(string name, int hp, int atk, int def): Character(name, hp, atk, def, ObjectType::Enemy) {}
 
 Enemy::~Enemy() {}
 
 void Enemy::act() {
 	if (findPlayer() != nullptr) {
-		Player* player = findPlayer();
-		player.beStruckBy(this);
+		Player* player = dynamic_cast<Player*>(findPlayer()->getObject());
+		player->beStruckBy(*this);
 		return;
 	}
 	Cell* cell = this->getCell();
-	int r = rand() % cell->neighbours.size();
-	while (cell->neighbours[r]->canMove()) {
-		r = rand() % cell->neighbours.size();
+	vector<Cell*> neighbours = cell->getNeighbours();
+	int r = rand() % neighbours.size();
+	while (!neighbours[r]->enemyCanMoveTo()) {
+		r = rand() % neighbours.size();
 	}
-	cell->neighbours[r].
+	neighbours[r]->setObject(this);
+	cell->clearObject();
+	this->setCell(neighbours[r]);
 }
 
 Cell* Enemy::findPlayer() {
 	Cell* cell = this->getCell();
-	for (Cell* each: cell->neighbours) {
-		if (each->obj->objectType == ObjectType::Player) {
+	for (Cell* each: cell->getNeighbours()) {
+		if (each->getObject()->getType() == ObjectType::Player) {
 			return each;
 		}
 	}

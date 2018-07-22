@@ -22,6 +22,9 @@ bool Cell::canMoveTo() const {
 	return (terrain == Terrain::Stairs || terrain == Terrain::Door || terrain == Terrain::Chamber || terrain == Terrain::Passage) && (obj->getType() != ObjectType::Potion) && (obj->getType() != ObjectType::Enemy);
 }
 
+bool Cell::enemyCanMoveTo() const {
+	return (terrain == Terrain::Stairs || terrain == Terrain::Door || terrain == Terrain::Chamber || terrain == Terrain::Passage) && (obj->getType() == ObjectType::Empty);
+}
 void Cell::setObject(Object* obj) {
 	this->obj = obj;
 }
@@ -43,6 +46,9 @@ void Cell::addNeighbour(Cell* cell) {
 	neighbours.emplace_back(cell);
 }
 
+vector<Cell*> Cell::getNeighbours() const {
+	return neighbours;
+}
 void Cell::setStairs() {
 	this->terrain = Terrain::Stairs;
 }
