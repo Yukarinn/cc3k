@@ -7,7 +7,7 @@ class Enemy: public Character {
 		Enemy(std::string name, int hp, int atk, int def);
 		~Enemy();
 		virtual void defeat() = 0;
-		virtual void act() = 0;
+		virtual void act();
 }
 
 #endif

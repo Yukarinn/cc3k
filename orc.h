@@ -7,6 +7,6 @@ class Orc: public Enemy {
 	public: 
 		Orc();
 		~Orc();
-		void strike(Goblin& other) override;
+		bool strike(Goblin& other) override;
 }
 #endif

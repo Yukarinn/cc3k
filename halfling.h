@@ -6,6 +6,5 @@ class Halfling: public Enemy {
 	public: 
 		Halfling();
 		~Halfing();
-		void beStruckBy(Character& other) override;
 }
 #endif

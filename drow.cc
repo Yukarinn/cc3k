@@ -6,6 +6,6 @@ Drow::Drow(): Player("Drow", 150, 25, 15, 150, 25, 15) {}
 Drow::~Drow() {}
 
 void Drow::beStruckBy(Elf& other) {
-
+	other.strike(*this);
 }
 
