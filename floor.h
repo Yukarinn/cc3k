@@ -21,7 +21,7 @@ class Floor {
     void spawnEnemies();
     
 Public:
-    Floor(Cell *cleanFloor[30][79]); // spawn everything, shared pointer?
+    Floor(Cell *cleanFloor[30][79], Player *thePlayer); // spawn everything
     ~Floor();
     void draw(); // display
     void mobAct();
