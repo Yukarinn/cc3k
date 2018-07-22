@@ -5,6 +5,6 @@ class Human: public Enemy {
 	public: 
 		Human();
 		~Human();
-		void defeat() override;
+		void drop() override;
 }
 #endif

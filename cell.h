@@ -13,6 +13,7 @@ class Cell {
     int r, c;
     int chamberNumber; // 0-4 for chamber, 5 for non-chamber
     // will never use this if non chamber
+		vecotr<Cell*> neighbours;
 public:
     Cell(Terrain terrain, int r, int c, int chamberNumber = 5);
     ~Cell();
@@ -22,6 +23,7 @@ public:
     void setObject(Object* obj);
     Object* getObject() const;
     int getChamberNumber() const;
+		void addNeighbour(Cell* cell);
 }
 
 #endif
