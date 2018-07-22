@@ -19,7 +19,7 @@ Cell::getTerrain() const {
 }
 
 bool canMoveTo() const {
-	return terrain == Terrain::Stairs || terrain == Terrain::Door || terrain == Terrain::Chamber || terrain == Terrain::Passage;
+	return (terrain == Terrain::Stairs || terrain == Terrain::Door || terrain == Terrain::Chamber || terrain == Terrain::Passage) && (obj->objectType != ObjectType::Potion) && (obj->objectType != ObjectType::Enemy);
 }
 
 void setObject(Object* obj) {
@@ -32,4 +32,8 @@ Object* getObject() const {
 
 int getChamberNumber() const {
 	return chamberNumber;
+}
+
+void addNeighbour(Cell* cell) {
+	neighbours.emplace_back(cell);
 }
