@@ -1,4 +1,6 @@
 #include "enemy.h"
+#include "treasure.h"
+#include <cstdlib>
 
 using namespace std;
 
@@ -30,4 +32,14 @@ Cell* Enemy::findPlayer() {
 	return nullptr;
 }
 
-
+void Enemy::drop() { //call before delete
+	Cell* cell = this->cell;
+	cell->clearObject();
+	Treasure* treasure;
+	if (rand() % 2) {
+		treasure = new Treasure(TreasureType::SM);	
+	} else {
+		treasure = new Treasure(TreasureType::NO);
+	}
+	cell->setObject(treasure);
+}
