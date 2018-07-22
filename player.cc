@@ -82,11 +82,10 @@ void Player::pick(Treasure& treasure) {
 }
 
 void Player::move(Cell* cell) {
-	Cell* prev = this->cell;
-	if (cell->obj.ObjectType == ObjectType::Treasure) {
+	Cell* prev = this.cell;
+	if (cell->getObject().ObjectType == ObjectType::Treasure) {
 		pick(*(cell->obj));
 	}
-	delete cell->obj;
-	cell->obj = this;
-	prev->obj = nullptr;
+	cell->setObject(this);
+	prev->clearObject();
 }
