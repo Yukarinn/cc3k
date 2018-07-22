@@ -3,22 +3,28 @@
 
 class Direction;
 class Floor;
+class Plyaer;
 
 class Game {
-    Floor * floor;
+    Floor *floor;
+    Cell * cleanFloor[30][79];
     int level;
+    Player * player;
+    bool readFloor = false;
 Public:
-    void startGame();
-    void endGame(bool isEnd);
-    void startLevel();
-    void endLevel();
+    Game();
+    void startGame(Player * playerType);
+    void endGame(); // display the scoreboard
+    void nextLevel();
     void toggleFreeze();
     void usePotion(Direction dir);
     void playerAttack(Direction dir);
     void playerMove(Direction dir);
+    void readFloors(std::string fileName);
+    void readFloorMode();
     std::string displayMenu();
     std::string displayAction();
-    void getPlayer(std::string race);
+    Player * getPlayer() const;
 }
 
-#endif /* game_hpp */
+#endif /* game_h */
