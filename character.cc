@@ -72,3 +72,4 @@ void Character::beStruckBy(Elf& other) {
 	other.strike(*this);
 	other.strike(*this);
 }
+

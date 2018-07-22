@@ -2,6 +2,8 @@
 #define PLAYER_H
 #include "character.h"
 
+
+class Cell;
 class Treasure;
 class Potion;
 
@@ -22,6 +24,6 @@ public:
     void die();
 		void pick(Treasure& treasure);
 		void drink(Potion& potion);
-
+		void move(Cell * cell);
 }
 #endif
