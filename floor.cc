@@ -15,6 +15,7 @@ void Floor::spawnPlayer(Object * thePlayer, int chamberNum)
     thePlayer->setAtk(thePlayer->getBaseAtk());
     thePlayer->setDef(thePlayer->getBaseDef());
     chambers[chamberNum][whichCell]->setObject(thePlayer); // put player in cell
+		thePlayer.setCell(chambers[chamberNum][whichCell]);
 }
 
 void Floor::spawnStairs(int chamberNum)
@@ -22,6 +23,7 @@ void Floor::spawnStairs(int chamberNum)
     int whichCell = rand() % chambers[chamberNum].size(); // choose cell
     chambers[chamberNum][whichCell]->setStairs();
 }
+
 void Floor::spawnPotions()
 {
     for (int i=0; i<10; i++)
@@ -37,7 +39,9 @@ void Floor::spawnPotions()
             PotionType::WD}
         if (! chambers[whichChamber][whichCell]->getObject) // nothings on the floor
         {
-            chambers[whichChamber][whichCell]->setObject(new Potion(potionTypes[whichPotion]));
+						Potion* potion = new Potion(potionTypes[whichPotion]);
+            chambers[whichChamber][whichCell]->setObject(potion);
+						potion.setCell(chambers[whichChamber][whichCell]);
         }
         else
         {
@@ -53,21 +57,17 @@ void Floor::spawnGold()
         int whichChamber = rand() % 5;
         int whichCell = rand() % chambers[whichChamber].size();
         int whichTreasure = rand() % 8;
-
+				Treasure* treasure;
         if (!(chambers[whichChamber][whichCell]->getObject()))
         {
             if (whichTreasure % 2 == 0 || whichTreasure == 1) // 5/8 chance
-            {
-                chambers[whichChamber][whichCell]->setObject(new Treasure(TreasureType::NO));
-            }
+								treasure = new Treasure(TreasureType::NO);
             else if (whichTreasure == 3) // 1/8 chance
-            {
-                chambers[whichChamber][whichCell]->setObject(new Treasure(TreasureType::DR));
-            }
+								treasure = new Treasure(TreasureType::HD); 
             else // 1/4 chance
-            {
-                chambers[whichChamber][whichCell]->setObject(new Treasure(TreasureType::SM));
-            }
+								treasure = new Treasure(TreasureType::SM);
+            chambers[whichChamber][whichCell]->setObject(treasure);
+						treasure.setCell(chambers[whichChamber][whichCell]);
         }
         else
         {
@@ -83,34 +83,24 @@ void Floor::spawnEnemies()
         int whichChamber = rand() % 5;
         int whichCell = rand() % chambers[whichChamber].size();
         int whichEnemy = rand() % 18;
-        
+        Enemy* enemy;
         if (!(chambers[whichChamber][whichCell]->getObject()))
         {
             if (whichEnemy < 4) // 2/9 human
-            {
-                chambers[whichChamber][whichCell]->setObject(new Human());
-            }
+								enemy = new Human();
             else if (whichEnemy < 7) // 3/18 dwarf
-            {
-                chambers[whichChamber][whichCell]->setObject(new Dwarf());
-            }
+								enemy = new Dwarf();
             else if (whichEnemy < 12) // 5/18 halfling
-            {
-                chambers[whichChamber][whichCell]->setObject(new Halfling());
-            }
+								enemy = new Halfling();
             else if (whichEnemy < 14) // 1/9 elf
-            {
-                chambers[whichChamber][whichCell]->setObject(new Elf());
-            }
+								enemy = new Elf();            
             else if (whichEnemy < 16) // 1/9 orc
-            {
-                chambers[whichChamber][whichCell]->setObject(new Orc());
-            }
-            else // 1/9 merchant
-            {
-                chambers[whichChamber][whichCell]->setObject(new Merchant());
-            }
-            mobs.emplace_back(chambers[whichChamber][whichCell]->getObject());
+								enemy = new Orc();  
+						else 
+								enemy = new Merchant();
+            chambers[whichChamber][whichCell]->setObject(enemy);
+						enemy.setCell(chambers[whichChamber][whichCell]);
+            mobs.emplace_back(enemy);
         }
         else
         {
@@ -127,11 +117,8 @@ Floor::Floor(Cell * cleanFloor[30][79], Player * thePlayer)
     {
         for (int j=0; j<79; j++)
         {
-            theFloor[i][j] = new Cell(cleanFloor[i][j]->getTerrrian(),
-                                      cleanFloor[i][j]->getr(),
-                                      cleanFloor[i][j]->getc());
-            
-            if (cleanFloor[i][j]->getTerrian == Terrian::Chamber)
+            theFloor[i][j] = new Cell(cleanFloor[i][j]->getTerrain(), i, j);
+            if (cleanFloor[i][j]->getTerrain == Terrain::Chamber)
             {
                 theFloor[i][j]->chamberNumber = cleanFloor[i][j]->getChamberNumber;
                 chambers[theFloor[i][j]->getChamberNumber].emplace_back(theFloor[i][j]);
