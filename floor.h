@@ -20,9 +20,11 @@ class Floor {
     void spawnGold();
     void spawnEnemies();
     
-Public:
+public:
     Floor(Cell *cleanFloor[30][79], Player *thePlayer); // spawn everything
     ~Floor();
+    Cell *getCell(int r, int c) const;
+    void spawn(); // spawn everything
     void draw(); // display
     void mobAct();
 }

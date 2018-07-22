@@ -127,6 +127,10 @@ Floor::Floor(Cell * cleanFloor[30][79], Player * thePlayer)
         }
     }
     
+}
+
+void Floor::spawn()
+{
     // choose chamber for player
     int chamberNumPlayer = rand() % 5;
     spawnPlayer(thePlayer, chamberNumPlayer);
