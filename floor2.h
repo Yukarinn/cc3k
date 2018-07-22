@@ -11,6 +11,14 @@ class Floor {
     std::vector<std::vector<Cell*>> theFloor;
     Player * player;
     std::vector<std::vector<int>> layout;
+    std::vector<std::vector<Cell *>> chambers;
+    
+    void spawnPlayer(Player * thePlayer, int chamberNum);
+    void spawnStairs(int chamberNum);
+    void spawnPotions();
+    void spawnGold();
+    void spawnEnemies();
+    
 public:
     Floor(std::vector<std::vector<char>> plan);
     ~Floor();
@@ -18,6 +26,7 @@ public:
     void setPlayer(Player* player);
     Player* getPlayer();
     void setup();
+    void spawn(); // spawn everything
 private:
     void floodfill(int i, int j, int chamber);
 };

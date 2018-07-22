@@ -1,6 +1,9 @@
 #include "floor2.h"
 #include "cell.h"
 #include "player.h"
+#include "potion.h"
+#include "treasure.h"
+#include "enemy.h"
 
 #include <vector>
 #include <iostream>
@@ -129,9 +132,126 @@ void Floor::setup() {
 		for (int j = 0; j < 79; j ++)  {
 			if (layout[i][j] == -1)
 				 layout[i][j] = 0;
-			cout << layout[i][j];
+			//cout << layout[i][j];
 		}
-		cout << endl;
+		//cout << endl;
 	}
+    // vector chambers
+    for (int i = 0; i < 25; i ++) {
+        for (int j = 0; j < 79; j ++)  {
+            if (layout[i][j] != 0) // chambers are 1-5, 0 is empty
+            {
+                chambers[layout[i][j]-1].push_back(theFloor[i][j]);
+            }
+        }
+    }
 }
 
+void Floor::spawnPlayer(Player * thePlayer, int chamberNum)
+{
+    
+    int whichCell = rand() % chambers[chamberNum].size(); // choose cell
+    // if its the next floor then we should use the original player
+    
+    // reset atk and def
+    thePlayer->setAtk(thePlayer->getBaseAtk());
+    thePlayer->setDef(thePlayer->getBaseDef());
+    chambers[chamberNum][whichCell]->setObject(thePlayer); // put player in cell
+    thePlayer->setCell(chambers[chamberNum][whichCell]);
+}
+
+void Floor::spawnStairs(int chamberNum)
+{
+    int whichCell = rand() % chambers[chamberNum].size(); // choose cell
+    chambers[chamberNum][whichCell]->setStairs();
+}
+
+void Floor::spawnPotions()
+{
+    for (int i=0; i<10; i++)
+    {
+        int whichChamber = rand() % 5;
+        int whichCell = rand() % chambers[whichChamber].size();
+        int whichPotion = rand() % 6;
+        vector <PotionType> potionTypes = {PotionType::RH,
+            PotionType::BA,
+            PotionType::BD,
+            PotionType::PH,
+            PotionType::WA,
+            PotionType::WD};
+        if (! chambers[whichChamber][whichCell]->getObject()) // nothings on the floor
+        {
+            Potion* potion = new Potion(potionTypes[whichPotion]);
+            chambers[whichChamber][whichCell]->setObject(potion);
+            potion->setCell(chambers[whichChamber][whichCell]);
+        }
+        else
+        {
+            i--; // occupied, do it again
+        }
+    }
+}
+
+void Floor::spawnGold()
+{
+    for (int i=0; i<10; i++)
+    {
+        int whichChamber = rand() % 5;
+        int whichCell = rand() % chambers[whichChamber].size();
+        int whichTreasure = rand() % 8;
+        Treasure* treasure;
+        if (!(chambers[whichChamber][whichCell]->getObject()))
+        {
+            if (whichTreasure % 2 == 0 || whichTreasure == 1) // 5/8 chance
+                treasure = new Treasure(TreasureType::NO);
+            else if (whichTreasure == 3) // 1/8 chance
+                treasure = new Treasure(TreasureType::HD);
+            else // 1/4 chance
+                treasure = new Treasure(TreasureType::SM);
+            chambers[whichChamber][whichCell]->setObject(treasure);
+            treasure->setCell(chambers[whichChamber][whichCell]);
+        }
+        else
+        {
+            i--; // occupied, try again
+        }
+    }
+}
+
+void Floor::spawn()
+{
+    // choose chamber for player
+    int chamberNumPlayer = rand() % 5;
+    spawnPlayer(player, chamberNumPlayer);
+    
+    // choose chamber for stairs
+    int chamberNumStairs = chamberNumPlayer;
+    while (chamberNumStairs == chamberNumPlayer)
+    {
+        chamberNumStairs = rand() % 5;
+    }
+    spawnStairs(chamberNumStairs);
+    
+    spawnPotions();
+    spawnGold();
+    //spawnEnemies(); // append to mob vector
+    
+    for (int i = 0; i < 30; i ++) {
+        for (int j = 0; j < 79; j ++) {
+            for (int di = -1; di <= 1; di ++) {
+                for (int dj = -1; dj <= 1; dj ++) {
+                    int ni = i + di;
+                    int nj = j + dj;
+                    if (ni < 0 || nj < 0 || ni >= 79 || nj >= 79)
+                        continue;
+                    if (theFloor[ni][nj]->getTerrain() == Terrain::WallV
+                        || theFloor[ni][nj]->getTerrain() == Terrain::WallH)
+                        continue;
+                    if (theFloor[ni][nj]->getTerrain() == Terrain::Empty)
+                        continue;
+                    theFloor[i][j]->addNeighbour(theFloor[ni][nj]);
+                }
+            }
+        }
+    }
+}
