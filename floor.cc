@@ -9,7 +9,7 @@ void Floor::spawnPlayer(Object * thePlayer, int chamberNum)
 {
 
     int whichCell = rand() % chambers[chamberNum].size(); // choose cell
-    // 2. if its the next floor then we should use the original player
+    // if its the next floor then we should use the original player
     
     // reset atk and def
     thePlayer->setAtk(thePlayer->getBaseAtk());
