@@ -4,24 +4,28 @@
 Class Object;
 
 enum Terrain {
-	Stairs, Wall, Door, Empty, Passage, Chamber, 
+	Stairs, Wall, Door, Empty, Passage, Chamber
+};
+
+enum Direction {
+    N, NE, E, SE, S, SW, W, NW
 };
 
 class Cell {
-	Terrain terrain;
-	Object * obj = nullptr;
+    Terrain terrain;
+    Object * obj = nullptr;
     int r, c;
     int chamberNumber; // 0-4 for chamber, 5 for non-chamber
-                            // will never use this if non chamber
-	public:
-		Cell(Terrain terrain, int r, int c, int chamberNumber = 5);
-		~Cell();	
-		Terrain getTerrain() const;
-		pair<int, int> getPos() const;
-		bool canMoveTo() const;
-		void setObject(Object* obj);
-		Object* getObject() const;
-		int getChamberNumber() const;
+    // will never use this if non chamber
+public:
+    Cell(Terrain terrain, int r, int c, int chamberNumber = 5);
+    ~Cell();
+    Terrain getTerrain() const;
+    pair<int, int> getPos() const;
+    bool canMoveTo() const;
+    void setObject(Object* obj);
+    Object* getObject() const;
+    int getChamberNumber() const;
 }
 
 #endif
