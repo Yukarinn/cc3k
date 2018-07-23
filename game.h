@@ -47,6 +47,7 @@ public:
 		bool isGameOver();    
     std::string displayMenu();
     Player *getPlayer() const;
+		void showFinal();
 private:
 		std::string getFullDirection(std::string dir); 	
     void newPlayer(char player);

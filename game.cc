@@ -2,7 +2,7 @@
 #include "floor.h"
 #include "cell.h"
 #include "player.h"
-
+#include "enemy.h"
 #include "shade.h"
 #include "vampire.h"
 #include "drow.h"
@@ -280,8 +280,7 @@ void Game::readFloorMode()
     readFloor = true;
 }
 
-std::string Game::displayMenu()
-{
+string Game::displayMenu(){
     stringstream menu;
     menu  << "Race: "  << player->getName() << "\tGold " << player->getGold();
   
@@ -303,4 +302,15 @@ Player* Game::getPlayer() const
 
 bool Game::isGameOver() {
 	return gameOver;
+}
+
+void Game::showFinal() {
+	draw();
+	int score = player->getGold();
+	if (player->getName() == "Shade") {
+	if (rand() % 2)
+		score = ceil(score * 1.5);
+	}
+	cout << "THE GAME IS DONE! YOUR SCORE WAS: " + to_string(score) << endl;
+	cout << "RESTART(R) or QUIT(Q)?" << endl;
 }
