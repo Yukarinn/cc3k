@@ -16,6 +16,7 @@ class Potion: public Item {
 		~Potion();
 		PotionType getPotionType() const;
 		std::string getEffect() const;
+		static void see(PotionType potionType);
 };
 
 #endif

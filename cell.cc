@@ -19,18 +19,29 @@ Terrain Cell::getTerrain() const {
 }
 
 bool Cell::canMoveTo() const {
-	return (terrain == Terrain::Stairs || terrain == Terrain::Door || terrain == Terrain::Chamber || terrain == Terrain::Passage) && (obj->getType() != ObjectType::Potion) && (obj->getType() != ObjectType::Enemy);
+	if (terrain != Terrain::Stairs && terrain != Terrain::Door && terrain != Terrain::Chamber && terrain != Terrain::Passage)
+		return false;
+	if (!obj) 
+		return true;
+	if (obj->getType() == ObjectType::Potion)
+		return false;
+	if (obj->getType() == ObjectType::Enemy)
+		return false;
+	return true;
 }
 
 bool Cell::enemyCanMoveTo() const {
-	return (terrain == Terrain::Stairs || terrain == Terrain::Door || terrain == Terrain::Chamber || terrain == Terrain::Passage) && (obj->getType() == ObjectType::Empty);
+	if (terrain != Terrain::Stairs && terrain != Terrain::Door && terrain != Terrain::Chamber && terrain != Terrain::Passage)
+		return false;
+	if (!obj)
+		return true;
+	return false;
 }
 void Cell::setObject(Object* obj) {
 	this->obj = obj;
 }
 
 void Cell::clearObject() {
-	delete this->obj;
 	this->obj = nullptr;
 }
 

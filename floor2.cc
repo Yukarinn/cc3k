@@ -413,10 +413,13 @@ void Floor::spawn()
     cout << "*** done spawning ***" << endl;
 }
 
-void Floor::mobAct()
+string Floor::mobAct()
 {
-    for (int i=0; i<mobs.size(); i++)
-    {
-        mobs[i]->act();
+		string ret = "";
+    for (int i=0; i < mobs.size(); i++)
+		{	
+				if (mobs[i]->getCell())
+					ret += mobs[i]->act();
     }
+		return ret;
 }

@@ -5,6 +5,8 @@
 #include "potion.h"
 #include "treasure.h"
 
+using namespace std;
+
 void Floor::spawnPlayer(Object * thePlayer, int chamberNum)
 {
 

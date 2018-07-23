@@ -2,11 +2,7 @@
 #define CHARACTER_H
 #include "object.h"
 #include <string>
-
-class Vampire;
-class Elf;
-class Goblin;
-class Halfling;
+#include <utility>
 
 class Character: public Object {
 	protected:
@@ -24,12 +20,6 @@ class Character: public Object {
 		int getAtk() const;
 		int getDef() const;
 		std::string getName() const;
-		virtual bool strike(Character& other);
-		virtual bool strike(Goblin& goblin);
-		bool strike(Halfling& other);
-		virtual void beStruckBy(Character& other);
-		virtual void beStruckBy(Vampire& other);
-		virtual void beStruckBy(Elf& other);
 };
 
 #endif

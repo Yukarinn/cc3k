@@ -11,11 +11,10 @@ Enemy::Enemy(string name, char display, int hp, int atk, int def): Character(nam
 
 Enemy::~Enemy() {}
 
-void Enemy::act() {
+string Enemy::act() {
 	if (findPlayer() != nullptr) {
 		Player* player = dynamic_cast<Player*>(findPlayer()->getObject());
-		player->beStruckBy(*this);
-		return;
+		return strike(player);
 	}
 	Cell* cell = this->getCell();
 	vector<Cell*> neighbours = cell->getNeighbours();
@@ -26,12 +25,13 @@ void Enemy::act() {
 	neighbours[r]->setObject(this);
 	cell->clearObject();
 	this->setCell(neighbours[r]);
+	return "";
 }
 
 Cell* Enemy::findPlayer() {
 	Cell* cell = this->getCell();
 	for (Cell* each: cell->getNeighbours()) {
-		if (each->getObject()->getType() == ObjectType::Player) {
+		if (each->getObject() && each->getObject()->getType() == ObjectType::Player) {
 			return each;
 		}
 	}
@@ -48,4 +48,24 @@ void Enemy::drop() { //call before delete
 		treasure = new Treasure(TreasureType::NO);
 	}
 	cell->setObject(treasure);
+	treasure->setCell(cell);
+	this->cell = nullptr;
+}
+
+
+
+string Enemy::strike(Player* other) {
+	int times = 1;
+	string ret = "";
+	if (name == "Elf")
+		times ++;
+	for (int i = 0; i < times; i ++) {
+		int damage = ceil((100.0/(100.0 + other->getDef())) * atk);
+		if (name == "Orc" && other->getName() == "Goblin") {
+			damage = ceil(1.5 * (100.0/(100.0 + other->getDef())) * atk);
+		}
+		other->setHp(max(0, other->getHp() - damage));
+		ret += name + " deals " + to_string(damage) + " damage to PC. ";
+	}	
+	return ret;
 }

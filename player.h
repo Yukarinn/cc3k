@@ -1,18 +1,20 @@
 #ifndef PLAYER_H
 #define PLAYER_H
-
+#include <cmath>
 #include "character.h"
 
 class Potion;
 class Treasure;
 class Cell;
+class Enemy;
 
 class Player: public Character {
 	protected:
+		Treasure* onHoard = nullptr;
     int maxHp;
     int baseAtk;
     int baseDef;
-    int gold;
+    int gold = 0;
 	public:
     Player(std::string name, int hp, int atk, int def, int max_hp, int base_hp, int base_def);
     ~Player();
@@ -23,8 +25,10 @@ class Player: public Character {
     int getGold() const;
     void setGold(int gold);
     void die();
-		void move(Cell* cell);
-		void pick(Treasure* treasure);
-		void drink(Potion* potion);
+		std::string move(Cell* cell);
+		bool pick(Treasure* treasure);
+		virtual void drink(Potion* potion);
+		std::string spot();
+		std::string strike(Enemy* enemy);
 };
 #endif

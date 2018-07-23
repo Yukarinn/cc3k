@@ -1,6 +1,7 @@
 #ifndef TREASURE_H
 #define TREASURE_H
 #include "item.h"
+#include <string>
 
 enum class TreasureType {
 	SM, NO, ME, HD, HN // small, normal, merchant, hoard dragon, hoard none
@@ -12,7 +13,8 @@ class Treasure: public Item {
 		Treasure(TreasureType treasureType);
 		~Treasure();
 		TreasureType getTreasureType() const;
-		void setTreasureType(TreasureType treasureType);	
+		void setTreasureType(TreasureType treasureType);
+		std::string getName();	
 };
 
 #endif

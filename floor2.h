@@ -7,7 +7,7 @@
 #include "halfling.h"
 #include "dwarf.h"
 #include "elf.h"
-
+#include <memory>
 #include <vector>
 #include <string>
 
@@ -21,7 +21,7 @@ class Floor {
 		Cell * customPlayerCell = nullptr;
     std::vector<std::vector<int>> layout;
     std::vector<std::vector<Cell *>> chambers;
-    std::vector<Enemy *> mobs;    
+    std::vector<Enemy*> mobs;    
 		bool custom = false;    
 public:
     Floor(std::vector<std::vector<char>> plan);
@@ -31,7 +31,7 @@ public:
     Player* getPlayer();
     void setup();
     void spawn(); // spawn everything
-		void mobAct();
+		std::string mobAct();
 private:
     void floodfill(int i, int j, int chamber);
 		void spawnPlayer(int chamberNum);

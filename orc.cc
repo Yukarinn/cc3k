@@ -7,8 +7,11 @@ Orc::Orc(): Enemy("Orc", 'O',  180, 30, 25) {}
 
 Orc::~Orc() {}
 
-bool Orc::strike(Goblin &other) {
-	int dmg = ceil(1.5 * (100/(100+other.getDef()))*this->atk);
+pair<bool, string> Orc::strike(Goblin& other) {
+	string ret = "";
+	int dmg = ceil(1.5 * (100.0/(100.0+other.getDef()))*this->atk);
 	other.setHp(other.getHp() - dmg);
-	return true;
+	ret += name + " deals " + to_string(dmg) + " damage to PC.";
+	return make_pair(true, ret);
 }
+

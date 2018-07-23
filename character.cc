@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Character::Character(string name, char display, int hp, int atk, int def, ObjectType objectType): Object(objectType, display), hp{hp}, atk{atk}, def{def} {}
+Character::Character(string name, char display, int hp, int atk, int def, ObjectType objectType): Object(objectType, display), name{name},  hp{hp}, atk{atk}, def{def} {}
 
 Character::~Character() {}
 
@@ -37,43 +37,5 @@ int Character::getAtk() const {
 
 int Character::getDef() const {
 	return def;
-}
-
-bool Character::strike(Character& other) {
-	int dmg = ceil((100/(100+other.getDef()))*this->atk);
-	other.setHp(other.getHp() - dmg);
-	return true;
-}
-
-bool Character::strike(Goblin& other) {
-	int dmg = ceil((100/(100+other.getDef()))*this->atk);
-	other.setHp(other.getHp() - dmg);
-	return true;
-}
-
-
-bool Character::strike(Halfling& other) {
-	if (rand() % 2) {
-		int dmg = ceil((100/(100+other.getDef()))*this->atk);
-		other.setHp(other.getHp() - dmg);
-		return true;
-	} 
-	cout << "attack missed" << endl;
-	return false;
-	
-}
-
-void Character::beStruckBy(Character& other) {
-	other.strike(*this);
-}
-
-void Character::beStruckBy(Vampire& other) {
-	if (other.strike(*this))
-		other.setHp(other.getHp() + 5);
-}
-
-void Character::beStruckBy(Elf& other) {
-	other.strike(*this);
-	other.strike(*this);
 }
 

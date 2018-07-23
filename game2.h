@@ -2,15 +2,21 @@
 #define GAME_H
 #include <vector>
 #include <string>
-
+#include <exception>
 class Floor;
 class Player;
 class Cell;
 
+class InvalidAction: public std::exception {
+	virtual const char* what() const throw() {
+		return "Invalid Action";
+	}
+};
+
 class Game {
     std::vector<Floor*> floors;
-    Player * player;
-    std::string action = "Player character has spawned.";
+		Player* player;
+    std::string action = "Player character has spawned." ;
     int level;
     
     std::vector<std::string> directions = {"no", "so", "ea", "we", "ne", "nw", "se", "sw"};
@@ -21,7 +27,7 @@ class Game {
     bool isFrozen = false;
     
 public:
-    Game(std::string file = "default.txt");
+    Game(std::string file = "default2.txt");
     ~Game();
     void newPlayer(int player);
     std::vector<std::string> getDirections() const;
@@ -35,14 +41,15 @@ public:
     void usePotion(std::string direction);
     void playerAttack(std::string direction);
     void playerMove(std::string direction);
-    
+		void mobAct();    
     void toggleFreeze();
     void readFloorMode();
     
     std::string displayMenu();
     std::string displayAction();
     Player *getPlayer() const;
-    
+private:
+		std::string getFullDirection(std::string dir); 
 };
 
 #endif

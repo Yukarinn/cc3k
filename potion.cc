@@ -1,9 +1,11 @@
 #include "potion.h"
 #include "player.h"
+#include <algorithm>
 #include <vector>
 
 using namespace std;
 
+vector<PotionType> Potion::seen = {};
 Potion::Potion(PotionType potionType): Item(ObjectType::Potion, 'P'), potionType{potionType} {}
 
 Potion::~Potion() {}
@@ -13,6 +15,8 @@ PotionType Potion::getPotionType() const {
 }
 
 string Potion::getEffect() const {
+	if (find(Potion::seen.begin(), Potion::seen.end(), potionType) == Potion::seen.end())
+		return "Unknown Potion";
 	switch(potionType) {
 		case PotionType::RH:
 			return "Plus HP";
@@ -29,3 +33,6 @@ string Potion::getEffect() const {
 	}
 }
 
+void Potion::see(PotionType potionType) {
+	Potion::seen.emplace_back(potionType);
+}

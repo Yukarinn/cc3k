@@ -8,6 +8,8 @@
 #include "drow.h"
 #include "goblin.h"
 #include "troll.h"
+#include "potion.h"
+#include "treasure.h"
 
 #include <fstream>
 #include <iostream>
@@ -75,6 +77,7 @@ void Game::draw() {
     cout << "Level: " << level << endl;
     cout << floors.size() << endl;
     cout << floors[level - 1]->draw() << endl;
+		cout << displayMenu() << endl;
     cout << "*********************************************************" << endl;
 }
 
@@ -88,7 +91,6 @@ void Game::startLevel() {
     {
         floors[level - 1]->spawn();
     }
-    draw();
 }
 
 void Game::nextLevel()
@@ -100,6 +102,7 @@ void Game::nextLevel()
     {
         floors[level - 1]->spawn();
     }
+		player->reset();
     draw();
 }
 
@@ -108,107 +111,134 @@ void Game::endGame() // display the scoreboard
     
 }
 
-Cell Game::*findCell(std::string dir)
+Cell* Game::findCell(std::string dir)
 {
-    int plyr = player->getCell()->getPos().first;
-    int plyc = player->getCell()->getPos().second;
-    int tempr, tempc;
+		Cell* cell = player->getCell();
+    int r = cell->getPos().first;
+    int c = cell->getPos().second;
+		int nr = r;
+		int nc = c;
+
     if (dir == "no")
-    {
-        tempr = plyr + 1;
-        tempc = plyc;
-    }
+			nr --;
     else if (dir == "so")
-    {
-        tempr = plyr - 1;
-        tempc = plyc;
-    }
-    else if (dir == "ea")
-    {
-        tempr = plyr;
-        tempc = plyc + 1;
-    }
+			nr ++;
+    else if	(dir == "ea")
+			nc ++;
     else if (dir == "we")
-    {
-        tempr = plyr;
-        tempc = plyc - 1;
-    }
-    else if (dir == "ne")
-    {
-        tempr = plyr + 1;
-        tempc = plyc + 1;
-    }
-    else if (dir == "nw")
-    {
-        tempr = plyr + 1;
-        tempc = plyc - 1;
-    }
-    else if (dir == "se")
-    {
-        tempr = plyr - 1;
-        tempc = plyc + 1;
-    }
-    else if (dir == "sw")
-    {
-        tempr = plyr - 1;
-        tempc = plyc - 1;
-    }
-    
-    if (! (floors[level - 1]->getCell[tempr][tempc]->getTerrain() == Terrain::WallV)
-        (floors[level - 1]->getCell[tempr][tempc]->getTerrain() == Terrain::WallH)
-        (floors[level - 1]->getCell[tempr][tempc]->getTerrain() == Terrain::Empty))
-    {
-        return floors[level - 1]->getCell[tempr][tempc];
-    }
-    else // cant step on / not valid floors[level - 1]->getCell
-    {
-        return floors[level - 1]->getCell[plyr][plyc];
-    }
+			nc --;
+    else if (dir == "ne") {
+			nr --;
+			nc ++;
+		}
+    else if (dir == "nw") {
+			nr --;
+			nc --;
+		}
+    else if (dir == "se") {
+			nr ++;
+			nc ++;
+		}
+    else if (dir == "sw") {
+			nr ++;
+			nc --;
+		} else {
+			return nullptr;
+		}
+		vector<Cell*> neighbours = cell->getNeighbours();
+		for (auto each: neighbours) {
+			if (each->getPos() == make_pair(nr, nc))
+				return each;
+		}
+		return nullptr;
 }
+
 
 void Game::usePotion(std::string dir)
 {
     Cell *location = findCell(dir);
-    if (location->getObject())
-    {
-        if (location->getObject()->getType() == ObjectType::Potion)
-        {
-            player->drink(location->getObject());
-        }
-    }
-    // else - not a potion so do nothing
+    if (location && location->getObject()) {
+        if (location->getObject()->getType() == ObjectType::Potion) {
+						Potion* potion = dynamic_cast<Potion*>(location->getObject()); 	
+						Potion::see(potion->getPotionType());
+						action = "Player drinks the " + potion->getEffect() + ". ";
+						player->drink(potion);
+						return;
+				}
+		}
+		action = "Invalid action. ";
+		throw InvalidAction();
 }
+
+
 void Game::playerAttack(std::string dir)
 {
     Cell *location = findCell(dir);
-    if (location->getObject())
-    {
-        if (location->getObject()->getType() == ObjectType::Enemy)
-        {
-            location->getObject()->beStruckBy(player);
-        }
-    }
+    if (location && location->getObject()) {
+        if (location->getObject()->getType() == ObjectType::Enemy) {
+						Enemy* enemy = dynamic_cast<Enemy*>(location->getObject());
+            action = player->strike(enemy);
+						return;
+				}
+		}
+		action = "Invalid action. ";
+		throw InvalidAction();
+}
+
+string Game::getFullDirection(string dir) {
+	if (dir == "no")
+		return "north";
+	if (dir == "so")
+		return "south";
+	if (dir == "ea")
+		return "east";
+	if (dir == "we") 
+		return "west";
+	if (dir == "se") 
+		return "south east";
+	if (dir == "sw")
+		return "south west";
+	if (dir == "ne")
+		return "north east";
+	if (dir == "nw")
+		return "north west";
 }
 
 void Game::playerMove(std::string dir)
-{
-    Cell *moveto = findCell(dir);
-    player->move(moveto);
-    plyr = moveto->getPos().first;
-    plyc = moveto->getPos().second;
+{	
+		string gold = "";
+    Cell *newCell = findCell(dir);
+		if (newCell && newCell->canMoveTo()) {
+			gold = player->move(newCell);
+		}	else {
+			action = "Invalid action. ";
+			throw InvalidAction();
+		}
     // check if stairs
-    if (moveto->getTerrain() == Terrain::Stairs)
+    if (newCell->getTerrain() == Terrain::Stairs)
     {
         // set stairs->player object to nullptr
-        moveto->setObject(nullptr);
+        newCell->setObject(nullptr);
         nextLevel();
-    }
-    if (!isFrozen)
-    {
-        floors[level - 1]->mobAct();
-    }
+				action = "Player goes up the stairs to the next level.";
+				return;
+		}
+		action = "Player moves " + getFullDirection(dir);
+		string potion = player->spot();
+		if (gold != "" && potion != "") {
+			action += ", " + gold + +", and spots " + potion;
+		}	else if (gold != "") {
+			action += " and " + gold;
+		} else if (potion != "") {
+			action += " and spots " + potion;
+		} else {
+			action += ". ";
+		}
 }
 
+void Game::mobAct() {
+	action += floors[level - 1]->mobAct();
+}
 void Game::toggleFreeze()
 {
     isFrozen = !isFrozen;
@@ -222,7 +252,7 @@ void Game::readFloorMode()
 std::string Game::displayMenu()
 {
     stringstream menu;
-    menu  << "Race: "  << player->getName() << " Gold " << player->getGold();
+    menu  << "Race: "  << player->getName() << "\t\tGold " << player->getGold();
     for (int i=0; i<50; i++)
     {
         menu << " ";
@@ -232,10 +262,11 @@ std::string Game::displayMenu()
     menu << "Atk: " << player->getAtk() << "\n";
     menu << "Def: " << player->getDef() << "\n";
     menu << "Action: " << action << "\n";
+		action = "";
     return menu.str();
 }
 
-Player Game::*getPlayer() const
+Player* Game::getPlayer() const
 {
     return player;
 }

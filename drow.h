@@ -2,11 +2,11 @@
 #define DROW_H
 #include "player.h"
 
-class Elf;
+class Potion;
 class Drow: public Player {
 	public: 
 		Drow();
 		~Drow();
-		void beStruckBy(Elf& other) override;
+		void drink(Potion* potion) override;
 };
 #endif
