@@ -34,6 +34,7 @@ void Merchant::drop() {
 	Treasure* treasure = new Treasure(TreasureType::ME);
 	cell->setObject(treasure);
 	treasure->setCell(cell);
+	this->cell = nullptr;
 }
 
 void Merchant::setAggro(bool aggro)

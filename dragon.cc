@@ -2,14 +2,13 @@
 #include "treasure.h"
 #include "cell.h"
 #include "player.h"
+#include <iostream>
 
 using namespace std;
 
 Dragon::Dragon(): Enemy("Dragon", 'D',  150, 20, 20) {}
 
-Dragon::~Dragon() {
-	cell->clearObject();
-}
+Dragon::~Dragon() {}
 
 string Dragon::act() {
 	Cell* cell = dragonFindPlayer();
@@ -40,6 +39,8 @@ Cell* Dragon::dragonFindPlayer() {
 void Dragon::drop() {
 	this->hoard->setTreasureType(TreasureType::HN);	
 	this->hoard = nullptr;
+	cell->clearObject();
+	this->cell = nullptr;	
 }
 
 Treasure* Dragon::getHoard() const {

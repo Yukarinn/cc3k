@@ -4,6 +4,7 @@
 #include <random>
 #include <ctime>
 #include "game2.h"
+#include "player.h"
 
 using namespace std; 
 
@@ -56,11 +57,20 @@ int main() {
 					continue;	
 				}
 				else if (buf == "q") {
-					
+					delete game;
+					break;
 				} else {
 					throw InvalidAction();
 				}
+				
+				if (game->isGameOver()) {
+					game->draw();
+					cout << "THE GAME IS DONE! YOUR SCORE WAS: " + to_string(game->getPlayer()->getGold()) << endl;
+					cout << "RESTART(R) or QUIT(Q)?" << endl;
+					continue;
+				}
 				game->mobAct();
+				game->endTurn();
 				game->draw();
 				game->displayMenu();
 			} catch (exception& e) {

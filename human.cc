@@ -15,7 +15,9 @@ void Human::drop() {
 	cell->clearObject();
 	Treasure* treasure1 = new Treasure(TreasureType::NO);
 	Treasure* treasure2 = new Treasure(TreasureType::NO);
+	
 	cell->setObject(treasure1);
+	treasure1->setCell(cell);
 	
 	vector<Cell*> neighbours = cell->getNeighbours();
 	int r = rand() % neighbours.size();
@@ -25,9 +27,11 @@ void Human::drop() {
 	Cell* cell2 = neighbours[r];
 	if (cell2->getObject() == nullptr) {
 		cell2->setObject(treasure2);
+		treasure2->setCell(cell2);
 	} else {
 		Player* player = dynamic_cast<Player*>(cell2->getObject());
 		player->setGold(player->getGold() + 4);
 		delete treasure2;
 	}
 }
+

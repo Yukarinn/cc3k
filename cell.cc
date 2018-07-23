@@ -31,7 +31,7 @@ bool Cell::canMoveTo() const {
 }
 
 bool Cell::enemyCanMoveTo() const {
-	if (terrain != Terrain::Stairs && terrain != Terrain::Door && terrain != Terrain::Chamber && terrain != Terrain::Passage)
+	if (terrain != Terrain::Stairs && terrain != Terrain::Door && terrain != Terrain::Chamber)
 		return false;
 	if (!obj)
 		return true;

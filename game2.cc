@@ -38,10 +38,10 @@ Game::Game(string file) {
 
 
 Game::~Game() {
-    delete player;
     for (auto each: floors) {
         delete each;
     }
+		delete player;
 }
 
 
@@ -74,11 +74,8 @@ vector<string> Game::getRaces() const {
 }
 
 void Game::draw() {
-    cout << "Level: " << level << endl;
-    cout << floors.size() << endl;
     cout << floors[level - 1]->draw() << endl;
 		cout << displayMenu() << endl;
-    cout << "*********************************************************" << endl;
 }
 
 void Game::startLevel() {
@@ -95,6 +92,10 @@ void Game::startLevel() {
 
 void Game::nextLevel()
 {
+		if (level == 5) {
+			gameOver = true;
+			return;
+		}
     level ++;
     floors[level - 1]->setPlayer(player);
     floors[level - 1]->setup();
@@ -104,11 +105,6 @@ void Game::nextLevel()
     }
 		player->reset();
     draw();
-}
-
-void Game::endGame() // display the scoreboard
-{
-    
 }
 
 Cell* Game::findCell(std::string dir)
@@ -228,20 +224,33 @@ void Game::playerMove(std::string dir)
 		if (gold != "" && potion != "") {
 			action += ", " + gold + +", and spots " + potion;
 		}	else if (gold != "") {
-			action += " and " + gold;
+			action += " and " + gold + ". ";
 		} else if (potion != "") {
-			action += " and spots " + potion;
+			action += " and spots " + potion + ". ";
 		} else {
 			action += ". ";
 		}
 }
 
 void Game::mobAct() {
-	action += floors[level - 1]->mobAct();
+	if (!isFrozen)
+		action += floors[level - 1]->mobAct();
 }
+
+void Game::endTurn() {
+	if (player->getName() == "Troll") {
+		if (player->getMaxHp() != player->getHp()) {
+			player->setHp(min(player->getMaxHp(), player->getHp() + 5));
+			action += "PC heals 5 HP passively. ";
+		}
+	}
+}
+
+
 void Game::toggleFreeze()
 {
     isFrozen = !isFrozen;
+		action = "Freeze! ";
 }
 
 void Game::readFloorMode()
@@ -252,11 +261,10 @@ void Game::readFloorMode()
 std::string Game::displayMenu()
 {
     stringstream menu;
-    menu  << "Race: "  << player->getName() << "\t\tGold " << player->getGold();
-    for (int i=0; i<50; i++)
-    {
-        menu << " ";
-    }
+    menu  << "Race: "  << player->getName() << "\tGold " << player->getGold();
+  
+		menu << "\t\t\t\t\t\t";
+		
     menu << "Floor: " << level << "\n";
     menu << "HP: " << player->getHp() << "\n";
     menu << "Atk: " << player->getAtk() << "\n";
@@ -271,4 +279,6 @@ Player* Game::getPlayer() const
     return player;
 }
 
-
+bool Game::isGameOver() {
+	return gameOver;
+}

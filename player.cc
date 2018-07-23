@@ -106,7 +106,7 @@ string Player::move(Cell* cell) {
 		Treasure* treasure = dynamic_cast<Treasure*>(cell->getObject());
 		string name = treasure->getName();
 		if (pick(treasure))
-			ret = "picks up " + name + ". ";
+			ret = "picks up " + name;
 	}
 	cell->setObject(this);
 	this->setCell(cell);
@@ -142,7 +142,7 @@ string Player::strike(Enemy* enemy) {
 	}
 	enemy->setHp(max(0, enemy->getHp() - damage));
 	
-	string ret = "PC deals " + to_string(damage) + " damage to " + enemy->getDisplay() + " (" + to_string(enemy->getHp()) + "). ";
+	string ret = "PC deals " + to_string(damage) + " damage to " + enemy->getDisplay() + " (" + to_string(enemy->getHp()) + "HP). ";
 	if (name == "Vampire") {
 		if (enemy->getName() == "Dwarf") {
 			ret += "Lost 5 HP. ";
@@ -156,6 +156,10 @@ string Player::strike(Enemy* enemy) {
 	
 	if (enemy->getHp() == 0) {
 		enemy->drop();
+		if (name == "Goblin") {
+			ret += "Stole 5 gold. ";
+			gold += 5;	
+		}
 	}
 	return ret;
 }

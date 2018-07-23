@@ -25,6 +25,7 @@ class Game {
     int plyr, plyc; // tracks where the player is
     bool readFloor = false;
     bool isFrozen = false;
+		bool gameOver = false;
     
 public:
     Game(std::string file = "default2.txt");
@@ -42,9 +43,10 @@ public:
     void playerAttack(std::string direction);
     void playerMove(std::string direction);
 		void mobAct();    
-    void toggleFreeze();
+    void endTurn();
+		void toggleFreeze();
     void readFloorMode();
-    
+		bool isGameOver();    
     std::string displayMenu();
     std::string displayAction();
     Player *getPlayer() const;

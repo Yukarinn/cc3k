@@ -121,10 +121,14 @@ Floor::Floor(vector<vector<char>> plan) {
 Floor::~Floor() {
 	for (auto row: theFloor) {
 		for (auto cell: row) {
+			if (cell->getObject() && (cell->getObject()->getType() == ObjectType::Enemy || cell->getObject()->getType() == ObjectType::Player)) 
+				cell->clearObject();
 			delete cell;
 		}
 	}
-	player = nullptr;
+	for (auto each: mobs) {
+		delete each;
+	}
 }
 
 string Floor::draw() {
@@ -254,6 +258,7 @@ void Floor::setup() {
 				for (int j = 0; j < 79; j++) {
 					if (theFloor[i][j]->getObject() && theFloor[i][j]->getObject()->getDisplay() == 'D') {
 						Dragon* dragon = dynamic_cast<Dragon*>(theFloor[i][j]->getObject());
+						mobs.emplace_back(dragon);
 						vector<Cell*> neighbours = theFloor[i][j]->getNeighbours();
 						for (auto neighbour: neighbours) {
 							if (neighbour->getObject() && neighbour->getObject()->getType() == ObjectType::Treasure) {
@@ -339,6 +344,7 @@ void Floor::spawnGold()
 									while (neighbours[whichCell]->getObject() != nullptr)
 										whichCell = rand() % neighbours.size();
 									Dragon* dragon = new Dragon();
+									mobs.emplace_back(dragon);
 									dragon->setHoard(treasure);
 									neighbours[whichCell]->setObject(dragon);
 									dragon->setCell(neighbours[whichCell]);
@@ -418,8 +424,13 @@ string Floor::mobAct()
 		string ret = "";
     for (int i=0; i < mobs.size(); i++)
 		{	
-				if (mobs[i]->getCell())
-					ret += mobs[i]->act();
+				if (mobs[i]->getCell()) {
+					if (mobs[i]->getName() == "Dragon") {
+						ret += dynamic_cast<Dragon*>(mobs[i])->act();
+					} else {
+						ret += mobs[i]->act();
+					}
+				}
     }
 		return ret;
 }
