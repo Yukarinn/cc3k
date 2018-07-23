@@ -1,12 +1,15 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
-
+#include <random>
+#include <ctime>
 #include "game2.h"
 
 using namespace std; 
 
 int main() {
+	srand(time(NULL));
+	cout << rand() % 100 << endl;
 	string buf;
 	Game game = Game();
 	cout << "Please select your race:" <<endl;

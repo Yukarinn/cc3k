@@ -1,13 +1,14 @@
 #include "dragon.h"
+#include "treasure.h"
 
 using namespace std;
 
-Dragon::Dragon() Enemy("Dragon", 150, 20, 20) {}
+Dragon::Dragon(): Enemy("Dragon", 'D',  150, 20, 20) {}
 
 Dragon::~Dragon() {}
 
-void Dragon::defeat() {
-
+void Dragon::drop() {
+	this->hoard->setTreasureType(TreasureType::HN);	
 }
 
 Treasure* Dragon::getHoard() const {

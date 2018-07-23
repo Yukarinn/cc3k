@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Halfling::Halfling(): Enemy("Halfling", 100, 15, 20) {}
+Halfling::Halfling(): Enemy("Halfling", 'L',  100, 15, 20) {}
 
 Halfling::~Halfling() {}
 

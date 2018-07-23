@@ -4,7 +4,7 @@ using namespace std;
 
 bool Merchant::aggro = false;
 
-Merchant::Merchant(): Enemy("Merchant", 30, 70, 5) {}
+Merchant::Merchant(): Enemy("Merchant", 'M', 30, 70, 5) {}
 
 Merchant::~Merchant() {
 

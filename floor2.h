@@ -18,18 +18,11 @@ class Enemy;
 class Floor {
     std::vector<std::vector<Cell*>> theFloor;
     Player * player;
+		Cell * customPlayerCell = nullptr;
     std::vector<std::vector<int>> layout;
     std::vector<std::vector<Cell *>> chambers;
-    std::vector<Enemy *> mobs; 
-    
-    void spawnPlayer(Player * thePlayer, int chamberNum);
-    void spawnStairs(int chamberNum);
-    void spawnPotions();
-    void spawnGold();
-    void spawnEnemies();
-    
-    void mobAct();
-    
+    std::vector<Enemy *> mobs;    
+		bool custom = false;    
 public:
     Floor(std::vector<std::vector<char>> plan);
     ~Floor();
@@ -38,8 +31,15 @@ public:
     Player* getPlayer();
     void setup();
     void spawn(); // spawn everything
+		void mobAct();
 private:
     void floodfill(int i, int j, int chamber);
+		void spawnPlayer(int chamberNum);
+    void spawnStairs(int chamberNum);
+    void spawnPotions();
+    void spawnGold();
+    void spawnEnemies();
+
 };
 
 #endif

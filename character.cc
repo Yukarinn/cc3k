@@ -8,13 +8,9 @@
 
 using namespace std;
 
-Character::Character(string name, int hp, int atk, int def, ObjectType objectType): Object(objectType), name{name}, hp{hp}, atk{atk}, def{def} {}
+Character::Character(string name, char display, int hp, int atk, int def, ObjectType objectType): Object(objectType, display), hp{hp}, atk{atk}, def{def} {}
 
 Character::~Character() {}
-
-string Character::getName() const {
-	return name;
-}
 
 void Character::setHp(int hp) {
 	this->hp = hp;
@@ -28,6 +24,9 @@ void Character::setDef(int def) {
 	this->def = def;
 }
 
+string Character::getName() const {
+	return name;
+}
 int Character::getHp() const {
 	return hp;
 }

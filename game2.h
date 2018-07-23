@@ -13,7 +13,7 @@ class Game {
 		std::vector<std::string> directions = {"no", "so", "ea", "we", "ne", "nw", "se", "sw"};
 		std::vector<std::string> races = {"shade", "drow", "vampire", "troll", "goblin"};
 	public:
-    Game(std::string file = "default.txt");
+    Game(std::string file = "default2.txt");
 		~Game();
 		void newPlayer(int player);
 		std::vector<std::string> getDirections() const;

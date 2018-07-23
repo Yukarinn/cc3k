@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Dwarf::Dwarf(): Enemy("Dwarf", 100, 20, 30) {}
+Dwarf::Dwarf(): Enemy("Dwarf", 'W', 100, 20, 30) {}
 
 Dwarf::~Dwarf() {}
 

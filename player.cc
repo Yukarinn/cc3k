@@ -6,7 +6,7 @@
 using namespace std;
 
 Player::Player(string name, int hp, int atk, int def, int maxHp, int baseAtk, int baseDef):
-	Character(name, hp, atk, def, ObjectType::Player), maxHp{maxHp}, baseAtk{baseAtk}, baseDef{baseDef} {}
+	Character(name, '@', hp, atk, def, ObjectType::Player), maxHp{maxHp}, baseAtk{baseAtk}, baseDef{baseDef} {}
 
 Player::~Player() {}
 

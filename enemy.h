@@ -4,7 +4,7 @@
 
 class Enemy: public Character {
 	public: 
-		Enemy(std::string name, int hp, int atk, int def);
+		Enemy(std::string name, char display, int hp, int atk, int def);
 		~Enemy();
 		virtual void drop();
 		virtual void act();

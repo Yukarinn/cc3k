@@ -3,7 +3,7 @@
 #include <cmath>
 using namespace std;
 
-Orc::Orc(): Enemy("Orc", 180, 30, 25) {}
+Orc::Orc(): Enemy("Orc", 'O',  180, 30, 25) {}
 
 Orc::~Orc() {}
 

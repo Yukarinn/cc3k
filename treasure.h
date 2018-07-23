@@ -12,7 +12,7 @@ class Treasure: public Item {
 		Treasure(TreasureType treasureType);
 		~Treasure();
 		TreasureType getTreasureType() const;
-		
+		void setTreasureType(TreasureType treasureType);	
 };
 
 #endif

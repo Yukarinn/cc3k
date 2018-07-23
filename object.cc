@@ -3,7 +3,7 @@
 
 using namespace std;
 
-Object::Object(ObjectType type): type{type} {}
+Object::Object(ObjectType type, char display): type{type}, display{display} {}
 
 Object::~Object() {}
 
@@ -17,4 +17,8 @@ Cell* Object::getCell() const {
 
 void Object::setCell(Cell* cell) {
 	this->cell = cell;
+}
+
+char Object::getDisplay() const {
+	return display;
 }

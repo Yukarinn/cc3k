@@ -15,15 +15,15 @@ class Character: public Object {
 		int atk;
 		int def;
 	public: 
-		Character(std::string name, int hp, int atk, int def, ObjectType objectType);
-		~Character();	
-		std::string getName() const;
+		Character(std::string name, char display, int hp, int atk, int def, ObjectType objectType);
+		~Character();
 		void setHp(int hp);
 		void setAtk(int atk);
 		void setDef(int def);
 		int getHp() const;
 		int getAtk() const;
 		int getDef() const;
+		std::string getName() const;
 		virtual bool strike(Character& other);
 		virtual bool strike(Goblin& goblin);
 		bool strike(Halfling& other);

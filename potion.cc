@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Potion::Potion(PotionType potionType): Item(ObjectType::Potion), potionType{potionType} {}
+Potion::Potion(PotionType potionType): Item(ObjectType::Potion, 'P'), potionType{potionType} {}
 
 Potion::~Potion() {}
 

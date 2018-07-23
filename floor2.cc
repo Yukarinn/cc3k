@@ -11,6 +11,7 @@
 #include "elf.h"
 #include "orc.h"
 #include "merchant.h"
+#include "dragon.h"
 
 #include <vector>
 #include <iostream>
@@ -41,20 +42,80 @@ Floor::Floor(vector<vector<char>> plan) {
 				case '.':
 					cell = new Cell(Terrain::Chamber, i, j);
 					break;
+				case '\\':
+					cell = new Cell(Terrain::Stairs, i, j);
+					break;
 				default:
+					custom = true;
 					cell = new Cell(Terrain::Chamber, i, j);
+					Object* obj = nullptr;
+					switch (plan[i][j]) {
+						case '0':
+							obj = new Potion(PotionType::RH);
+							break;
+						case '1':
+							obj = new Potion(PotionType::BA);
+							break;
+						case '2':
+							obj = new Potion(PotionType::BD);
+							break;
+						case '3':
+							obj = new Potion(PotionType::PH);
+							break;
+						case '4':
+							obj = new Potion(PotionType::WA);
+							break;
+						case '5':
+							obj = new Potion(PotionType::WD);
+							break;	
+						case '6':
+							obj = new Treasure(TreasureType::NO);
+							break;
+						case '7':
+							obj = new Treasure(TreasureType::SM);
+							break;
+						case '8':
+							obj = new Treasure(TreasureType::ME);
+							break;
+						case '9':
+							obj = new Treasure(TreasureType::HD);
+							break;
+						case '@':
+							customPlayerCell = cell;
+							break;
+						case 'H':
+							obj = new Human();
+							break;
+						case 'W':
+							obj = new Dwarf();
+							break;
+						case 'E':
+							obj = new Elf();
+							break;
+						case 'O':
+							obj = new Orc();
+							break;
+						case 'M':
+							obj = new Merchant();
+							break;
+						case 'D':
+							obj = new Dragon();
+							break;
+						case 'L':
+							obj = new Halfling();
+							break;
+					}
+					if (obj) {
+						cell->setObject(obj);
+						obj->setCell(cell);
+					}
 					break;
 			}
 			row.push_back(cell);
 		}
 		theFloor.push_back(row);
 	}
-    
-    vector<Cell*> chamberrow;
-    for (int i=0; i<5; i++)
-    {
-        chambers.push_back(chamberrow);
-    }
+	cout << "*** done reading in from layout ***" << endl;
 }
 
 Floor::~Floor() {
@@ -63,7 +124,7 @@ Floor::~Floor() {
 			delete cell;
 		}
 	}
-	delete player;
+	player = nullptr;
 }
 
 string Floor::draw() {
@@ -80,8 +141,8 @@ string Floor::draw() {
 			else if (cell->getTerrain() == Terrain::Empty) {
 				ret += " ";
 			}
-			else if (cell->getObject() && cell->getObject()->getType() == ObjectType::Player) {
-				ret += "@";
+			else if (cell->getObject()) {
+				ret += cell->getObject()->getDisplay();
 			}
 			else if (cell->getTerrain() == Terrain::Chamber) {
 				ret += ".";
@@ -91,6 +152,9 @@ string Floor::draw() {
 			}
 			else if (cell->getTerrain() == Terrain::Door) {
 				ret += "+";
+			} 
+			else if (cell->getTerrain() == Terrain::Stairs) {
+				ret += "\\";
 			}
 		}
 		ret += "\n";
@@ -100,6 +164,10 @@ string Floor::draw() {
 
 void Floor::setPlayer(Player* player) {
 	this->player = player;
+	if (custom) {
+		customPlayerCell->setObject(player);
+		player->setCell(customPlayerCell);	
+	}
 }
 
 Player* Floor::getPlayer() {
@@ -181,20 +249,33 @@ void Floor::setup() {
             }
         }
     }
-
+		if (custom) {
+			for (int i = 0; i < 25; i ++) {
+				for (int j = 0; j < 79; j++) {
+					if (theFloor[i][j]->getObject() && theFloor[i][j]->getObject()->getDisplay() == 'D') {
+						Dragon* dragon = dynamic_cast<Dragon*>(theFloor[i][j]->getObject());
+						vector<Cell*> neighbours = theFloor[i][j]->getNeighbours();
+						for (auto neighbour: neighbours) {
+							if (neighbour->getObject() && neighbour->getObject()->getType() == ObjectType::Treasure) {
+								Treasure* treasure = dynamic_cast<Treasure*>(neighbour->getObject());
+								if (treasure->getTreasureType() == TreasureType::HD) {
+									dragon->setHoard(treasure);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	cout << "*** done setup ***" << endl;
 }
 
-void Floor::spawnPlayer(Player * thePlayer, int chamberNum)
+void Floor::spawnPlayer(int chamberNum)
 {
-    
     int whichCell = rand() % chambers[chamberNum].size(); // choose cell
-    // if its the next floor then we should use the original player
-    
-    // reset atk and def
-    thePlayer->setAtk(thePlayer->getBaseAtk());
-    thePlayer->setDef(thePlayer->getBaseDef());
-    chambers[chamberNum][whichCell]->setObject(thePlayer); // put player in cell
-    thePlayer->setCell(chambers[chamberNum][whichCell]);
+    Cell* cell = chambers[chamberNum][whichCell];
+    cell->setObject(player);
+		player->setCell(cell);
 }
 
 void Floor::spawnStairs(int chamberNum)
@@ -216,11 +297,12 @@ void Floor::spawnPotions()
             PotionType::PH,
             PotionType::WA,
             PotionType::WD};
-        if (! chambers[whichChamber][whichCell]->getObject()) // nothings on the floor
+				Cell* cell = chambers[whichChamber][whichCell];
+        if (cell->getObject() == nullptr) // nothings on the floor
         {
             Potion* potion = new Potion(potionTypes[whichPotion]);
-            chambers[whichChamber][whichCell]->setObject(potion);
-            potion->setCell(chambers[whichChamber][whichCell]);
+            cell->setObject(potion);
+            potion->setCell(cell);
         }
         else
         {
@@ -242,8 +324,26 @@ void Floor::spawnGold()
         {
             if (whichTreasure % 2 == 0 || whichTreasure == 1) // 5/8 chance
                 treasure = new Treasure(TreasureType::NO);
-            else if (whichTreasure == 3) // 1/8 chance
+            else if (whichTreasure == 3) { // 1/8 chance
                 treasure = new Treasure(TreasureType::HD);
+								bool free = false;
+								vector<Cell*> neighbours = cell->getNeighbours();
+								for (auto neighbour: neighbours) {
+									if (neighbour->getObject() == nullptr)
+										free = true;
+								}
+								if (!free) {
+									i--;
+								} else {
+									int whichCell = rand() % neighbours.size();
+									while (neighbours[whichCell]->getObject() != nullptr)
+										whichCell = rand() % neighbours.size();
+									Dragon* dragon = new Dragon();
+									dragon->setHoard(treasure);
+									neighbours[whichCell]->setObject(dragon);
+									dragon->setCell(neighbours[whichCell]);
+								}
+						}
             else // 1/4 chance
                 treasure = new Treasure(TreasureType::SM);
             cell->setObject(treasure);
@@ -293,9 +393,11 @@ void Floor::spawnEnemies()
 
 void Floor::spawn()
 {
+		if (custom)
+			return;
     // choose chamber for player
     int chamberNumPlayer = rand() % 5;
-    spawnPlayer(player, chamberNumPlayer);
+    spawnPlayer(chamberNumPlayer);
     
     // choose chamber for stairs
     int chamberNumStairs = chamberNumPlayer;
@@ -303,13 +405,12 @@ void Floor::spawn()
     {
         chamberNumStairs = rand() % 5;
     }
-    spawnStairs(chamberNumStairs);
-    
+    spawnStairs(chamberNumStairs); 
     spawnPotions();
     spawnGold();
-    //spawnEnemies(); // append to mob vector
+    spawnEnemies();
     
-    
+    cout << "*** done spawning ***" << endl;
 }
 
 void Floor::mobAct()
