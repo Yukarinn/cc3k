@@ -18,6 +18,8 @@
 
 using namespace std;
 
+
+// reads 5 floors from file
 Game::Game(string file) {
     ifstream F{file};
     string line;
@@ -44,21 +46,27 @@ Game::~Game() {
 		delete player;
 }
 
+
+// select player dialogue
 void Game::selectPlayer() {
 
 	cout << "Please select your race:" <<endl;
 	for (int i = 0; i < getRaces().size(); i ++) {
 		cout << getRaces()[i][0] << ": " << getRaces()[i] << endl;
 	}
+
 	char selection;
 	cin >> selection;
+	
 	while (selection != 's' && selection != 'd' && selection != 'v' && selection != 'g' && selection != 't') {
 		cout << "Please select a valid race." << endl;
 		cin >> selection;
 	}
+	
 	newPlayer(selection);
 }
 
+// creates new player object
 void Game::newPlayer(char race) {
     switch(race) {
         case 's':
@@ -93,16 +101,11 @@ void Game::draw() {
 }
 
 void Game::startLevel() {
-    //cout << "one" << endl;
     floors[level - 1]->setPlayer(player);
-    //cout << "two" << endl;
     floors[level - 1]->setup();
-    //cout << "three" << endl;
-    if (!readFloor)
-    {
-        floors[level - 1]->spawn();
-    }
+    floors[level - 1]->spawn();
 }
+
 
 void Game::nextLevel()
 {
@@ -111,16 +114,14 @@ void Game::nextLevel()
 			return;
 		}
     level ++;
-    floors[level - 1]->setPlayer(player);
-    floors[level - 1]->setup();
-    if (!readFloor)
-    {
-        floors[level - 1]->spawn();
-    }
+		startLevel();
 		player->reset();
     draw();
 }
 
+// given a direction, finds the cell
+// that is in the direction of the current cell,
+// or nullptr if it isn't part of a chamber
 Cell* Game::findCell(std::string dir)
 {
 		Cell* cell = player->getCell();
@@ -164,14 +165,15 @@ Cell* Game::findCell(std::string dir)
 }
 
 
+// use potion
 void Game::usePotion(std::string dir)
 {
-    Cell *location = findCell(dir);
-    if (location && location->getObject()) {
+    Cell *location = findCell(dir); // where to find potion?
+    if (location && location->getObject()) { // is this a potion?
         if (location->getObject()->getType() == ObjectType::Potion) {
 						Potion* potion = dynamic_cast<Potion*>(location->getObject()); 	
-						Potion::see(potion->getPotionType());
-						action = "Player drinks the " + potion->getEffect() + ". ";
+						Potion::see(potion->getPotionType()); // mark this potion as seen
+						action = "Player drinks the " + potion->getEffect() + ". "; // getEffect() returns string corresponding to potion
 						player->drink(potion);
 						return;
 				}
@@ -181,13 +183,14 @@ void Game::usePotion(std::string dir)
 }
 
 
+// attack enemy
 void Game::playerAttack(std::string dir)
 {
-    Cell *location = findCell(dir);
-    if (location && location->getObject()) {
+    Cell *location = findCell(dir); // where to attack?
+    if (location && location->getObject()) { // is this attack possible?
         if (location->getObject()->getType() == ObjectType::Enemy) {
 						Enemy* enemy = dynamic_cast<Enemy*>(location->getObject());
-            action = player->strike(enemy);
+            action = player->strike(enemy); // strike returns string corresponding to the action
 						return;
 				}
 		}
@@ -214,12 +217,13 @@ string Game::getFullDirection(string dir) {
 		return "north west";
 }
 
+// player movement method
 void Game::playerMove(std::string dir)
 {	
-		string gold = "";
+		string gold = ""; // string for displaying picking up gold action
     Cell *newCell = findCell(dir);
 		if (newCell && newCell->canMoveTo()) {
-			gold = player->move(newCell);
+			gold = player->move(newCell); // move returns a string corresponding whether or not gold was picked up
 		}	else {
 			action = "Invalid action. ";
 			throw InvalidAction();
@@ -234,8 +238,9 @@ void Game::playerMove(std::string dir)
 				return;
 		}
 		action = "Player moves " + getFullDirection(dir);
-		string potion = player->spot();
-		if (gold != "" && potion != "") {
+		string potion = player->spot(); // player->spot() checks if there are any nearby potions nearby, returns string of all of them
+		
+		if (gold != "" && potion != "") {  // english rules to display the correct action string
 			action += ", " + gold + +", and spots " + potion;
 		}	else if (gold != "") {
 			action += " and " + gold + ". ";
@@ -246,11 +251,15 @@ void Game::playerMove(std::string dir)
 		}
 }
 
+// make enemies act
 void Game::mobAct() {
 	if (!isFrozen)
 		action += floors[level - 1]->mobAct();
 }
 
+// actions at the end of each "turn"
+// check if player died, trolls heal
+// 5 at the end of each turn
 void Game::endTurn() {
 	if (player->getHp() == 0) {
 		gameOver = true;
@@ -273,11 +282,6 @@ void Game::toggleFreeze()
 			action = "Freeze! ";
 		else
 			action = "Unfreeze! ";
-}
-
-void Game::readFloorMode()
-{
-    readFloor = true;
 }
 
 string Game::displayMenu(){
@@ -308,9 +312,8 @@ void Game::showFinal() {
 	draw();
 	int score = player->getGold();
 	if (player->getName() == "Shade") {
-	if (rand() % 2)
 		score = ceil(score * 1.5);
 	}
 	cout << "THE GAME IS DONE! YOUR SCORE WAS: " + to_string(score) << endl;
-	cout << "RESTART(R) or QUIT(Q)?" << endl;
+	cout << "RESTART(r) or QUIT(q)?" << endl;
 }

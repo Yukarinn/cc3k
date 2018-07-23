@@ -22,7 +22,6 @@ class Game {
     std::vector<std::string> directions = {"no", "so", "ea", "we", "ne", "nw", "se", "sw"};
     std::vector<std::string> races = {"shade", "drow", "vampire", "troll", "goblin"};
     
-    bool readFloor = false;
     bool isFrozen = false;
 		bool gameOver = false;
     
@@ -36,21 +35,20 @@ public:
     void draw();
     void nextLevel();
     void endGame(); // display the scoreboard 
-    Cell *findCell(std::string direction);
-    void usePotion(std::string direction);
-    void playerAttack(std::string direction);
-    void playerMove(std::string direction);
-		void mobAct();    
     void endTurn();
 		void toggleFreeze();
-    void readFloorMode();
 		bool isGameOver();    
-    std::string displayMenu();
     Player *getPlayer() const;
 		void showFinal();
+		void usePotion(std::string direction);
+    void playerAttack(std::string direction);
+    void playerMove(std::string direction);
+		void mobAct();  
 private:
 		std::string getFullDirection(std::string dir); 	
     void newPlayer(char player);
+		Cell *findCell(std::string direction);
+		std::string displayMenu();
 };
 
 #endif
