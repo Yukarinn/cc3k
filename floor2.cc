@@ -171,56 +171,56 @@ void Floor::setPlayer(Player* player) {
 }
 
 Player* Floor::getPlayer() {
-	return player;
+    return player;
 }
-	
+
 
 void Floor::floodfill(int i, int j, int chamber) {
-	if (i < 0 || j < 0 || i >= 25 || j >= 79)
-		return;
-	if (theFloor[i][j]->getTerrain() != Terrain::Chamber)
-		return;
-	if (layout[i][j] != 0) 
-		return;
-	layout[i][j] = chamber;
-	floodfill(i + 1, j, chamber);
-	floodfill(i - 1, j, chamber);
-	floodfill(i, j - 1, chamber);
-	floodfill(i, j + 1, chamber);
+    if (i < 0 || j < 0 || i >= 25 || j >= 79)
+        return;
+    if (theFloor[i][j]->getTerrain() != Terrain::Chamber)
+        return;
+    if (layout[i][j] != 0)
+        return;
+    layout[i][j] = chamber;
+    floodfill(i + 1, j, chamber);
+    floodfill(i - 1, j, chamber);
+    floodfill(i, j - 1, chamber);
+    floodfill(i, j + 1, chamber);
 }
 
 void Floor::setup() {
-	int chamber = 1;
-	
-	for (int i = 0; i < 25; i ++) {
-		vector<int> row(79);
-		for (int j = 0; j < 79; j ++)
-				row[j] = 0;
-		layout.push_back(row);
-	}
-	for (int i = 0; i < 25; i ++) {
-		for (int j = 0; j < 79; j ++) {
-			if (layout[i][j] != 0)
-				 continue;
-			if (theFloor[i][j]->getTerrain() != Terrain::Chamber) 
-				layout[i][j] = -1;
-			if (theFloor[i][j]->getTerrain() == Terrain::Chamber) {
-				floodfill(i, j, chamber ++);
-			}
-		}
-	}
-	for (int i = 0; i < 25; i ++) {
-		for (int j = 0; j < 79; j ++)  {
-			if (layout[i][j] == -1)
-				 layout[i][j] = 0;
-			//cout << layout[i][j];
-		}
-		//cout << endl;
-	}
-	for (int i = 0; i < 5; i++) {
-		vector<Cell*> row;
-		chambers.push_back(row);
-	}
+    int chamber = 1;
+    
+    for (int i = 0; i < 25; i ++) {
+        vector<int> row(79);
+        for (int j = 0; j < 79; j ++)
+            row[j] = 0;
+        layout.push_back(row);
+    }
+    for (int i = 0; i < 25; i ++) {
+        for (int j = 0; j < 79; j ++) {
+            if (layout[i][j] != 0)
+                continue;
+            if (theFloor[i][j]->getTerrain() != Terrain::Chamber)
+                layout[i][j] = -1;
+            if (theFloor[i][j]->getTerrain() == Terrain::Chamber) {
+                floodfill(i, j, chamber ++);
+            }
+        }
+    }
+    for (int i = 0; i < 25; i ++) {
+        for (int j = 0; j < 79; j ++)  {
+            if (layout[i][j] == -1)
+                layout[i][j] = 0;
+            //cout << layout[i][j];
+        }
+        //cout << endl;
+    }
+    for (int i = 0; i < 5; i++) {
+        vector<Cell*> row;
+        chambers.push_back(row);
+    }
     // vector chambers
     for (int i = 0; i < 25; i ++) {
         for (int j = 0; j < 79; j ++)  {
@@ -230,8 +230,8 @@ void Floor::setup() {
             }
         }
     }
-		
-		for (int i = 0; i < 25; i ++) {
+    
+    for (int i = 0; i < 25; i ++) {
         for (int j = 0; j < 79; j ++) {
             for (int di = -1; di <= 1; di ++) {
                 for (int dj = -1; dj <= 1; dj ++) {
@@ -319,7 +319,7 @@ void Floor::spawnGold()
         int whichCell = rand() % chambers[whichChamber].size();
         int whichTreasure = rand() % 8;
         Treasure* treasure;
-				Cell* cell = chambers[whichChamber][whichCell];
+        Cell* cell = chambers[whichChamber][whichCell];
         if (cell->getObject() == nullptr)
         {
             if (whichTreasure % 2 == 0 || whichTreasure == 1) // 5/8 chance
@@ -365,7 +365,7 @@ void Floor::spawnEnemies()
         int whichCell = rand() % chambers[whichChamber].size();
         int whichEnemy = rand() % 18;
         Enemy* enemy;
-				Cell* cell = chambers[whichChamber][whichCell];
+        Cell* cell = chambers[whichChamber][whichCell];
         if (cell->getObject() == nullptr)
         {
             if (whichEnemy < 4) // 2/9 human
