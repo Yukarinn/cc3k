@@ -18,37 +18,37 @@
 using namespace std;
 
 Floor::Floor(vector<vector<char>> plan) {
-	for (int i = 0; i < 25; i ++) {
-		vector<Cell*> row;
-		for (int j = 0; j < 79; j ++) {
-			Cell* cell;
-			switch(plan[i][j]) {
-				case '|':
-					cell = new Cell(Terrain::WallV, i, j);
-					break;
-				case '-':
-					cell = new Cell(Terrain::WallH, i, j);
-					break;
-				case ' ':
-					cell = new Cell(Terrain::Empty, i, j);
-					break;
-				case '#':
-					cell = new Cell(Terrain::Passage, i, j);
-					break;
-				case '+':
-					cell = new Cell(Terrain::Door, i, j);
-					break;
-				case '.':
-					cell = new Cell(Terrain::Chamber, i, j);
-					break;
-				default:
-					cell = new Cell(Terrain::Chamber, i, j);
-					break;
-			}
-			row.push_back(cell);
-		}
-		theFloor.push_back(row);
-	}
+    for (int i = 0; i < 25; i ++) {
+        vector<Cell*> row;
+        for (int j = 0; j < 79; j ++) {
+            Cell* cell;
+            switch(plan[i][j]) {
+                case '|':
+                    cell = new Cell(Terrain::WallV, i, j);
+                    break;
+                case '-':
+                    cell = new Cell(Terrain::WallH, i, j);
+                    break;
+                case ' ':
+                    cell = new Cell(Terrain::Empty, i, j);
+                    break;
+                case '#':
+                    cell = new Cell(Terrain::Passage, i, j);
+                    break;
+                case '+':
+                    cell = new Cell(Terrain::Door, i, j);
+                    break;
+                case '.':
+                    cell = new Cell(Terrain::Chamber, i, j);
+                    break;
+                default:
+                    cell = new Cell(Terrain::Chamber, i, j);
+                    break;
+            }
+            row.push_back(cell);
+        }
+        theFloor.push_back(row);
+    }
     
     vector<Cell*> chamberrow;
     for (int i=0; i<5; i++)
@@ -58,101 +58,101 @@ Floor::Floor(vector<vector<char>> plan) {
 }
 
 Floor::~Floor() {
-	for (auto row: theFloor) {
-		for (auto cell: row) {
-			delete cell;
-		}
-	}
-	delete player;
+    for (auto row: theFloor) {
+        for (auto cell: row) {
+            delete cell;
+        }
+    }
+    delete player;
 }
 
 string Floor::draw() {
-	string ret = "";
-	for (int i = 0; i < 25; i ++) {
-		for (int j = 0; j < 79; j ++) {
-			Cell* cell = theFloor[i][j];
-			if (cell->getTerrain() == Terrain::WallV) {
-				ret += "|";
-			}
-			else if (cell->getTerrain() == Terrain::WallH) {
-				ret += "-";
-			}
-			else if (cell->getTerrain() == Terrain::Empty) {
-				ret += " ";
-			}
-			else if (cell->getObject() && cell->getObject()->getType() == ObjectType::Player) {
-				ret += "@";
-			}
-			else if (cell->getTerrain() == Terrain::Chamber) {
-				ret += ".";
-			}
-			else if (cell->getTerrain() == Terrain::Passage) {
-				ret += "#";
-			}
-			else if (cell->getTerrain() == Terrain::Door) {
-				ret += "+";
-			}
-		}
-		ret += "\n";
-	}
-	return ret;
+    string ret = "";
+    for (int i = 0; i < 25; i ++) {
+        for (int j = 0; j < 79; j ++) {
+            Cell* cell = theFloor[i][j];
+            if (cell->getTerrain() == Terrain::WallV) {
+                ret += "|";
+            }
+            else if (cell->getTerrain() == Terrain::WallH) {
+                ret += "-";
+            }
+            else if (cell->getTerrain() == Terrain::Empty) {
+                ret += " ";
+            }
+            else if (cell->getObject() && cell->getObject()->getType() == ObjectType::Player) {
+                ret += "@";
+            }
+            else if (cell->getTerrain() == Terrain::Chamber) {
+                ret += ".";
+            }
+            else if (cell->getTerrain() == Terrain::Passage) {
+                ret += "#";
+            }
+            else if (cell->getTerrain() == Terrain::Door) {
+                ret += "+";
+            }
+        }
+        ret += "\n";
+    }
+    return ret;
 }
 
 void Floor::setPlayer(Player* player) {
-	this->player = player;
+    this->player = player;
 }
 
 Player* Floor::getPlayer() {
-	return player;
+    return player;
 }
-	
+
 
 void Floor::floodfill(int i, int j, int chamber) {
-	if (i < 0 || j < 0 || i >= 25 || j >= 79)
-		return;
-	if (theFloor[i][j]->getTerrain() != Terrain::Chamber)
-		return;
-	if (layout[i][j] != 0) 
-		return;
-	layout[i][j] = chamber;
-	floodfill(i + 1, j, chamber);
-	floodfill(i - 1, j, chamber);
-	floodfill(i, j - 1, chamber);
-	floodfill(i, j + 1, chamber);
+    if (i < 0 || j < 0 || i >= 25 || j >= 79)
+        return;
+    if (theFloor[i][j]->getTerrain() != Terrain::Chamber)
+        return;
+    if (layout[i][j] != 0)
+        return;
+    layout[i][j] = chamber;
+    floodfill(i + 1, j, chamber);
+    floodfill(i - 1, j, chamber);
+    floodfill(i, j - 1, chamber);
+    floodfill(i, j + 1, chamber);
 }
 
 void Floor::setup() {
-	int chamber = 1;
-	
-	for (int i = 0; i < 25; i ++) {
-		vector<int> row(79);
-		for (int j = 0; j < 79; j ++)
-				row[j] = 0;
-		layout.push_back(row);
-	}
-	for (int i = 0; i < 25; i ++) {
-		for (int j = 0; j < 79; j ++) {
-			if (layout[i][j] != 0)
-				 continue;
-			if (theFloor[i][j]->getTerrain() != Terrain::Chamber) 
-				layout[i][j] = -1;
-			if (theFloor[i][j]->getTerrain() == Terrain::Chamber) {
-				floodfill(i, j, chamber ++);
-			}
-		}
-	}
-	for (int i = 0; i < 25; i ++) {
-		for (int j = 0; j < 79; j ++)  {
-			if (layout[i][j] == -1)
-				 layout[i][j] = 0;
-			//cout << layout[i][j];
-		}
-		//cout << endl;
-	}
-	for (int i = 0; i < 5; i++) {
-		vector<Cell*> row;
-		chambers.push_back(row);
-	}
+    int chamber = 1;
+    
+    for (int i = 0; i < 25; i ++) {
+        vector<int> row(79);
+        for (int j = 0; j < 79; j ++)
+            row[j] = 0;
+        layout.push_back(row);
+    }
+    for (int i = 0; i < 25; i ++) {
+        for (int j = 0; j < 79; j ++) {
+            if (layout[i][j] != 0)
+                continue;
+            if (theFloor[i][j]->getTerrain() != Terrain::Chamber)
+                layout[i][j] = -1;
+            if (theFloor[i][j]->getTerrain() == Terrain::Chamber) {
+                floodfill(i, j, chamber ++);
+            }
+        }
+    }
+    for (int i = 0; i < 25; i ++) {
+        for (int j = 0; j < 79; j ++)  {
+            if (layout[i][j] == -1)
+                layout[i][j] = 0;
+            //cout << layout[i][j];
+        }
+        //cout << endl;
+    }
+    for (int i = 0; i < 5; i++) {
+        vector<Cell*> row;
+        chambers.push_back(row);
+    }
     // vector chambers
     for (int i = 0; i < 25; i ++) {
         for (int j = 0; j < 79; j ++)  {
@@ -162,8 +162,8 @@ void Floor::setup() {
             }
         }
     }
-		
-		for (int i = 0; i < 25; i ++) {
+    
+    for (int i = 0; i < 25; i ++) {
         for (int j = 0; j < 79; j ++) {
             for (int di = -1; di <= 1; di ++) {
                 for (int dj = -1; dj <= 1; dj ++) {
@@ -181,7 +181,7 @@ void Floor::setup() {
             }
         }
     }
-
+    
 }
 
 void Floor::spawnPlayer(Player * thePlayer, int chamberNum)
@@ -237,7 +237,7 @@ void Floor::spawnGold()
         int whichCell = rand() % chambers[whichChamber].size();
         int whichTreasure = rand() % 8;
         Treasure* treasure;
-				Cell* cell = chambers[whichChamber][whichCell];
+        Cell* cell = chambers[whichChamber][whichCell];
         if (cell->getObject() == nullptr)
         {
             if (whichTreasure % 2 == 0 || whichTreasure == 1) // 5/8 chance
@@ -265,7 +265,7 @@ void Floor::spawnEnemies()
         int whichCell = rand() % chambers[whichChamber].size();
         int whichEnemy = rand() % 18;
         Enemy* enemy;
-				Cell* cell = chambers[whichChamber][whichCell];
+        Cell* cell = chambers[whichChamber][whichCell];
         if (cell->getObject() == nullptr)
         {
             if (whichEnemy < 4) // 2/9 human
