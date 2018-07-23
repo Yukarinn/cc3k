@@ -1,5 +1,7 @@
 #include "human.h"
 #include "treasure.h"
+#include "player.h"
+#include "cell.h"
 #include <cstdlib>
 
 using namespace std;
@@ -15,15 +17,16 @@ void Human::drop() {
 	Treasure* treasure2 = new Treasure(TreasureType::NO);
 	cell->setObject(treasure1);
 	
+	vector<Cell*> neighbours = cell->getNeighbours();
 	int r = rand() % neighbours.size();
-	while (neighbours[r]->getObject() != nullptr && neighbours[r]->getObject() != ObjectType::Player) {
+	while (neighbours[r]->getObject() != nullptr && neighbours[r]->getObject()->getType() != ObjectType::Player) {
 		r = rand() % neighbours.size();
 	}
 	Cell* cell2 = neighbours[r];
 	if (cell2->getObject() == nullptr) {
 		cell2->setObject(treasure2);
 	} else {
-		Player* player = cell2->getObject();
+		Player* player = dynamic_cast<Player*>(cell2->getObject());
 		player->setGold(player->getGold() + 4);
 		delete treasure2;
 	}

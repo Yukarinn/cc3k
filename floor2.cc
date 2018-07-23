@@ -162,6 +162,26 @@ void Floor::setup() {
             }
         }
     }
+		
+		for (int i = 0; i < 25; i ++) {
+        for (int j = 0; j < 79; j ++) {
+            for (int di = -1; di <= 1; di ++) {
+                for (int dj = -1; dj <= 1; dj ++) {
+                    int ni = i + di;
+                    int nj = j + dj;
+                    if (ni < 0 || nj < 0 || ni >= 25 || nj >= 79)
+                        continue;
+                    if (theFloor[ni][nj]->getTerrain() == Terrain::WallV
+                        || theFloor[ni][nj]->getTerrain() == Terrain::WallH)
+                        continue;
+                    if (theFloor[ni][nj]->getTerrain() == Terrain::Empty)
+                        continue;
+                    theFloor[i][j]->addNeighbour(theFloor[ni][nj]);
+                }
+            }
+        }
+    }
+
 }
 
 void Floor::spawnPlayer(Player * thePlayer, int chamberNum)
@@ -217,7 +237,8 @@ void Floor::spawnGold()
         int whichCell = rand() % chambers[whichChamber].size();
         int whichTreasure = rand() % 8;
         Treasure* treasure;
-        if (!(chambers[whichChamber][whichCell]->getObject()))
+				Cell* cell = chambers[whichChamber][whichCell];
+        if (cell->getObject() == nullptr)
         {
             if (whichTreasure % 2 == 0 || whichTreasure == 1) // 5/8 chance
                 treasure = new Treasure(TreasureType::NO);
@@ -225,8 +246,8 @@ void Floor::spawnGold()
                 treasure = new Treasure(TreasureType::HD);
             else // 1/4 chance
                 treasure = new Treasure(TreasureType::SM);
-            chambers[whichChamber][whichCell]->setObject(treasure);
-            treasure->setCell(chambers[whichChamber][whichCell]);
+            cell->setObject(treasure);
+            treasure->setCell(cell);
         }
         else
         {
@@ -235,7 +256,7 @@ void Floor::spawnGold()
     }
 }
 
-/*
+
 void Floor::spawnEnemies()
 {
     for (int i=0; i<20; i++)
@@ -244,7 +265,8 @@ void Floor::spawnEnemies()
         int whichCell = rand() % chambers[whichChamber].size();
         int whichEnemy = rand() % 18;
         Enemy* enemy;
-        if (!(chambers[whichChamber][whichCell]->getObject()))
+				Cell* cell = chambers[whichChamber][whichCell];
+        if (cell->getObject() == nullptr)
         {
             if (whichEnemy < 4) // 2/9 human
                 enemy = new Human();
@@ -258,8 +280,8 @@ void Floor::spawnEnemies()
                 enemy = new Orc();
             else
                 enemy = new Merchant();
-            chambers[whichChamber][whichCell]->setObject(enemy);
-            enemy->setCell(chambers[whichChamber][whichCell]);
+            cell->setObject(enemy);
+            enemy->setCell(cell);
             mobs.emplace_back(enemy);
         }
         else
@@ -267,7 +289,7 @@ void Floor::spawnEnemies()
             i--; // occupied, try again
         }
     }
-}*/
+}
 
 void Floor::spawn()
 {
@@ -287,24 +309,7 @@ void Floor::spawn()
     spawnGold();
     //spawnEnemies(); // append to mob vector
     
-    for (int i = 0; i < 25; i ++) {
-        for (int j = 0; j < 79; j ++) {
-            for (int di = -1; di <= 1; di ++) {
-                for (int dj = -1; dj <= 1; dj ++) {
-                    int ni = i + di;
-                    int nj = j + dj;
-                    if (ni < 0 || nj < 0 || ni >= 79 || nj >= 79)
-                        continue;
-                    if (theFloor[ni][nj]->getTerrain() == Terrain::WallV
-                        || theFloor[ni][nj]->getTerrain() == Terrain::WallH)
-                        continue;
-                    if (theFloor[ni][nj]->getTerrain() == Terrain::Empty)
-                        continue;
-                    theFloor[i][j]->addNeighbour(theFloor[ni][nj]);
-                }
-            }
-        }
-    }
+    
 }
 
 void Floor::mobAct()

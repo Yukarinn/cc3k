@@ -1,6 +1,6 @@
 #include "orc.h"
 #include "goblin.h"
-
+#include <cmath>
 using namespace std;
 
 Orc::Orc(): Enemy("Orc", 180, 30, 25) {}

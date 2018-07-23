@@ -6,8 +6,8 @@ class Merchant: public Enemy {
 	public: 
 		Merchant();
 		~Merchant();
-    static void setAggro();
-    void defeat(); // override; - cant override if theres not virtual
+    static void setAggro(bool aggro);
+    void drop() override;
     void beStruckBy(Character &other) override;
 };
 #endif

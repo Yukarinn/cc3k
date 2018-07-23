@@ -1,5 +1,12 @@
 #ifndef FLOOR_H
 #define FLOOR_H
+#include "human.h"
+#include "dragon.h"
+#include "merchant.h"
+#include "orc.h"
+#include "halfling.h"
+#include "dwarf.h"
+#include "elf.h"
 
 #include <vector>
 #include <string>

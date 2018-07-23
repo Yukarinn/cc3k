@@ -9,8 +9,8 @@ class Dragon: public Enemy {
 	public: 
 		Dragon();
 		~Dragon();
-		void defeat() override;
+		void drop() override;
 		Treasure* getHoard() const;
 		void setHoard(Treasure* hoard);
-}
+};
 #endif

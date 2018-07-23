@@ -2,23 +2,23 @@
 
 using namespace std;
 
-Merchant::Merchant() Enemy("Merchant", 30, 70, 5) {}
+bool Merchant::aggro = false;
+
+Merchant::Merchant(): Enemy("Merchant", 30, 70, 5) {}
 
 Merchant::~Merchant() {
 
 }
 
-Merchant::beStruckBy(Character &other) {
-
-}
-void Merchant::defeat() {
+void Merchant::drop() {
 
 }
 
-// initialize static bool
-bool Merchant::aggro = false;
+void Merchant::beStruckBy(Character& other) {
 
-static void setAggro()
+}
+
+void Merchant::setAggro(bool aggro)
 {
-    aggro = true;
+    Merchant::aggro = aggro;
 }
