@@ -3,23 +3,33 @@
 #include <algorithm>
 #include <random>
 #include <ctime>
-#include "game2.h"
+#include "game.h"
 #include "player.h"
 
 using namespace std; 
 
-int main() {
+int main(int argc, char *argv[]) {
+	bool custom = false;
+	string file;
+	if (argc > 1) {
+		if (argc > 2) {
+			cerr << "Usage: "<< argv[0] << " FILE.TXT" << endl;
+			return 1;
+		}
+		custom = true;	
+		file = argv[1];
+	}
+	cin.exceptions(ios::eofbit|ios::failbit);
 	srand(time(NULL));
 	cout << rand() % 100 << endl;
 	string buf;
-	Game* game = new Game();
-	cout << "Please select your race:" <<endl;
-	for (int i = 0; i < game->getRaces().size(); i ++) {
-		cout << i + 1 << ": " << game->getRaces()[i] << endl;
-	}
-	int selection;
-	cin >> selection;
-	game->newPlayer(selection);
+	Game * game;
+	if (!custom)
+		game = new Game();
+	else
+		game = new Game(file);
+	
+	game->selectPlayer();
 	game->startLevel();	
 	vector<string> directions = game->getDirections();
 	game->draw();
@@ -45,13 +55,11 @@ int main() {
 				}
 				else if (buf == "r") {
 					delete game;
-					game = new Game();
-					cout << "Please select your race:" <<endl;
-					for (int i = 0; i < game->getRaces().size(); i ++) {
-						cout << i + 1 << ": " << game->getRaces()[i] << endl;
-					}
-					cin >> selection;
-					game->newPlayer(selection);
+					if (!custom)
+						game = new Game();
+					else
+						game = new Game(file);
+					game->selectPlayer();
 					game->startLevel();	
 					game->draw();
 					continue;	
@@ -60,7 +68,7 @@ int main() {
 					delete game;
 					break;
 				} else {
-					throw InvalidAction();
+					continue;
 				}
 				
 				if (game->isGameOver()) {
@@ -71,15 +79,28 @@ int main() {
 				}
 				game->mobAct();
 				game->endTurn();
+				if (game->isGameOver()) {
+					game->draw();
+					int score = game->getPlayer()->getGold();
+					if (game->getPlayer()->getName() == "Shade") {
+						if (rand() % 2)
+							score = ceil(score * 1.5);
+					}
+					cout << "THE GAME IS DONE! YOUR SCORE WAS: " + to_string(score) << endl;
+					cout << "RESTART(R) or QUIT(Q)?" << endl;
+					continue;
+				}
 				game->draw();
 				game->displayMenu();
 			} catch (exception& e) {
+				if (cin.eof()) {
+					delete game;
+					break;
+				}
 				cout << e.what() << endl;
 				game->draw();
 				game->displayMenu();
 			}
 		}
-	} catch (exception& e) {
-		cout << e.what() << endl;
-	}
+	} catch (exception& e) {}
 }

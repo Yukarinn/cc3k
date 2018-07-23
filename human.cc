@@ -33,5 +33,6 @@ void Human::drop() {
 		player->setGold(player->getGold() + 4);
 		delete treasure2;
 	}
+	this->cell = nullptr;
 }
 

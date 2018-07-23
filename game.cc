@@ -1,5 +1,5 @@
-#include "game2.h"
-#include "floor2.h"
+#include "game.h"
+#include "floor.h"
 #include "cell.h"
 #include "player.h"
 
@@ -44,22 +44,36 @@ Game::~Game() {
 		delete player;
 }
 
+void Game::selectPlayer() {
 
-void Game::newPlayer(int race) {
+	cout << "Please select your race:" <<endl;
+	for (int i = 0; i < getRaces().size(); i ++) {
+		cout << getRaces()[i][0] << ": " << getRaces()[i] << endl;
+	}
+	char selection;
+	cin >> selection;
+	while (selection != 's' && selection != 'd' && selection != 'v' && selection != 'g' && selection != 't') {
+		cout << "Please select a valid race." << endl;
+		cin >> selection;
+	}
+	newPlayer(selection);
+}
+
+void Game::newPlayer(char race) {
     switch(race) {
-        case 1:
+        case 's':
             player = new Shade();
             return;
-        case 2:
+        case 'd':
             player = new Drow();
             return;
-        case 3:
+        case 'v':
             player = new Vampire();
             return;
-        case 4:
+        case 't':
             player = new Troll();
             return;
-        case 5:
+        case 'g':
             player = new Goblin();
             return;
     }
@@ -238,6 +252,11 @@ void Game::mobAct() {
 }
 
 void Game::endTurn() {
+	if (player->getHp() == 0) {
+		gameOver = true;
+		action += "PC has died! ";
+		return;
+	}
 	if (player->getName() == "Troll") {
 		if (player->getMaxHp() != player->getHp()) {
 			player->setHp(min(player->getMaxHp(), player->getHp() + 5));

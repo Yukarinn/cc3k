@@ -1,4 +1,4 @@
-#include "floor2.h"
+#include "floor.h"
 #include "cell.h"
 #include "player.h"
 #include "potion.h"
@@ -85,24 +85,31 @@ Floor::Floor(vector<vector<char>> plan) {
 							break;
 						case 'H':
 							obj = new Human();
+							mobs.emplace_back(dynamic_cast<Enemy*>(obj));
 							break;
 						case 'W':
 							obj = new Dwarf();
+							mobs.emplace_back(dynamic_cast<Enemy*>(obj));
 							break;
 						case 'E':
 							obj = new Elf();
+							mobs.emplace_back(dynamic_cast<Enemy*>(obj));
 							break;
 						case 'O':
 							obj = new Orc();
+							mobs.emplace_back(dynamic_cast<Enemy*>(obj));
 							break;
 						case 'M':
 							obj = new Merchant();
+							mobs.emplace_back(dynamic_cast<Enemy*>(obj));
 							break;
 						case 'D':
 							obj = new Dragon();
+							mobs.emplace_back(dynamic_cast<Enemy*>(obj));
 							break;
 						case 'L':
 							obj = new Halfling();
+							mobs.emplace_back(dynamic_cast<Enemy*>(obj));
 							break;
 					}
 					if (obj) {
@@ -111,9 +118,9 @@ Floor::Floor(vector<vector<char>> plan) {
 					}
 					break;
 			}
-			row.push_back(cell);
+			row.emplace_back(cell);
 		}
-		theFloor.push_back(row);
+		theFloor.emplace_back(row);
 	}
 	cout << "*** done reading in from layout ***" << endl;
 }
@@ -200,7 +207,7 @@ void Floor::setup() {
         vector<int> row(79);
         for (int j = 0; j < 79; j ++)
             row[j] = 0;
-        layout.push_back(row);
+        layout.emplace_back(row);
     }
     for (int i = 0; i < 25; i ++) {
         for (int j = 0; j < 79; j ++) {
@@ -223,14 +230,14 @@ void Floor::setup() {
     }
     for (int i = 0; i < 5; i++) {
         vector<Cell*> row;
-        chambers.push_back(row);
+        chambers.emplace_back(row);
     }
     // vector chambers
     for (int i = 0; i < 25; i ++) {
         for (int j = 0; j < 79; j ++)  {
             if (layout[i][j] > 0) // chambers are 1-5, 0 is empty
             {
-                chambers[layout[i][j]-1].push_back(theFloor[i][j]);
+                chambers[layout[i][j]-1].emplace_back(theFloor[i][j]);
             }
         }
     }
@@ -258,7 +265,6 @@ void Floor::setup() {
 				for (int j = 0; j < 79; j++) {
 					if (theFloor[i][j]->getObject() && theFloor[i][j]->getObject()->getDisplay() == 'D') {
 						Dragon* dragon = dynamic_cast<Dragon*>(theFloor[i][j]->getObject());
-						mobs.emplace_back(dragon);
 						vector<Cell*> neighbours = theFloor[i][j]->getNeighbours();
 						for (auto neighbour: neighbours) {
 							if (neighbour->getObject() && neighbour->getObject()->getType() == ObjectType::Treasure) {
@@ -303,7 +309,7 @@ void Floor::spawnPotions()
             PotionType::WA,
             PotionType::WD};
 				Cell* cell = chambers[whichChamber][whichCell];
-        if (cell->getObject() == nullptr) // nothings on the floor
+        if (cell->getTerrain() == Terrain::Chamber && cell->getObject() == nullptr) // nothings on the floor
         {
             Potion* potion = new Potion(potionTypes[whichPotion]);
             cell->setObject(potion);
@@ -325,7 +331,7 @@ void Floor::spawnGold()
         int whichTreasure = rand() % 8;
         Treasure* treasure;
         Cell* cell = chambers[whichChamber][whichCell];
-        if (cell->getObject() == nullptr)
+        if (cell->getTerrain() == Terrain::Chamber && cell->getObject() == nullptr)
         {
             if (whichTreasure % 2 == 0 || whichTreasure == 1) // 5/8 chance
                 treasure = new Treasure(TreasureType::NO);
@@ -334,14 +340,14 @@ void Floor::spawnGold()
 								bool free = false;
 								vector<Cell*> neighbours = cell->getNeighbours();
 								for (auto neighbour: neighbours) {
-									if (neighbour->getObject() == nullptr)
+									if (neighbour->getTerrain() == Terrain::Chamber && neighbour->getObject() == nullptr)
 										free = true;
 								}
 								if (!free) {
 									i--;
 								} else {
 									int whichCell = rand() % neighbours.size();
-									while (neighbours[whichCell]->getObject() != nullptr)
+									while (neighbours[whichCell]->getTerrain() != Terrain::Chamber || neighbours[whichCell]->getObject() != nullptr)
 										whichCell = rand() % neighbours.size();
 									Dragon* dragon = new Dragon();
 									mobs.emplace_back(dragon);
@@ -372,7 +378,7 @@ void Floor::spawnEnemies()
         int whichEnemy = rand() % 18;
         Enemy* enemy;
         Cell* cell = chambers[whichChamber][whichCell];
-        if (cell->getObject() == nullptr)
+        if (cell->getTerrain() == Terrain::Chamber && cell->getObject() == nullptr)
         {
             if (whichEnemy < 4) // 2/9 human
                 enemy = new Human();

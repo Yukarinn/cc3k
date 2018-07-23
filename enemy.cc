@@ -19,6 +19,13 @@ string Enemy::act() {
 	Cell* cell = this->getCell();
 	vector<Cell*> neighbours = cell->getNeighbours();
 	int r = rand() % neighbours.size();
+	bool free = false;
+	for (auto each: neighbours) {
+		if (each->enemyCanMoveTo())
+			free = true;
+	}
+	if (!free)
+		return "";
 	while (!neighbours[r]->enemyCanMoveTo()) {
 		r = rand() % neighbours.size();
 	}
@@ -64,8 +71,12 @@ string Enemy::strike(Player* other) {
 		if (name == "Orc" && other->getName() == "Goblin") {
 			damage = ceil(1.5 * (100.0/(100.0 + other->getDef())) * atk);
 		}
-		other->setHp(max(0, other->getHp() - damage));
-		ret += name + " deals " + to_string(damage) + " damage to PC. ";
+		if (rand() % 2) {
+			other->setHp(max(0, other->getHp() - damage));
+			ret += name + " deals " + to_string(damage) + " damage to PC. ";
+		} else {
+			ret += name + " missed PC. ";
+		}
 	}	
 	return ret;
 }

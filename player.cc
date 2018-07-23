@@ -12,7 +12,9 @@ using namespace std;
 Player::Player(string name, int hp, int atk, int def, int maxHp, int baseAtk, int baseDef):
 	Character(name, '@', hp, atk, def, ObjectType::Player), maxHp{maxHp}, baseAtk{baseAtk}, baseDef{baseDef} {}
 
-Player::~Player() {}
+Player::~Player() {
+	if (onHoard) delete onHoard;
+}
 
 int Player::getMaxHp() const {
 	return maxHp;
@@ -32,10 +34,6 @@ int Player::getGold() const {
 
 void Player::setGold(int gold) {
 	this->gold = gold;
-}
-
-void Player::die() {
-
 }
 
 void Player::reset() {
@@ -126,7 +124,6 @@ string Player::spot() {
 	if (ret != "") {
 		ret.pop_back();
 		ret.pop_back();
-		ret += ". ";
 	}
 	return ret;
 }
