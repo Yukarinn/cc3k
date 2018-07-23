@@ -85,5 +85,4 @@ void Game::startLevel() {
 }
 
 void Game::playerMove(string direction) {
-	vector<Cell*> neighbours = player->getNeighbours();
 }
