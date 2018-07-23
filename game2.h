@@ -20,6 +20,7 @@ class Game {
 		std::vector<std::string> getRaces() const;
 		void startLevel();
 		void draw();
+		void playerMove(std::string direction);
 };
 
 #endif

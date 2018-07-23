@@ -136,10 +136,14 @@ void Floor::setup() {
 		}
 		//cout << endl;
 	}
+	for (int i = 0; i < 5; i++) {
+		vector<Cell*> row;
+		chambers.push_back(row);
+	}
     // vector chambers
     for (int i = 0; i < 25; i ++) {
         for (int j = 0; j < 79; j ++)  {
-            if (layout[i][j] != 0) // chambers are 1-5, 0 is empty
+            if (layout[i][j] > 0) // chambers are 1-5, 0 is empty
             {
                 chambers[layout[i][j]-1].push_back(theFloor[i][j]);
             }

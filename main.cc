@@ -17,7 +17,10 @@ int main() {
 	cin >> selection;
 	game.newPlayer(selection);
 	game.startLevel();	
+	vector<string> directions = game.getDirections();
 	while (cin >> buf) {
-	
+		if (find(directions.begin(), directions.end(), buf) != directions.end()) {
+			game.playerMove(buf);
+		}	
 	}
 }

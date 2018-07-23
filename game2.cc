@@ -76,7 +76,14 @@ void Game::draw() {
 }
 
 void Game::startLevel() {
+	cout << "one" << endl;
 	floors[level - 1]->setPlayer(player);
+	cout << "two" << endl;
 	floors[level - 1]->setup();
+	cout << "three" << endl;
 	draw();
+}
+
+void Game::playerMove(string direction) {
+	vector<Cell*> neighbours = player->getNeighbours();
 }
