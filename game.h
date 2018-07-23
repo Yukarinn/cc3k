@@ -27,7 +27,7 @@ class Game {
 		bool gameOver = false;
     
 public:
-    Game(std::string file="default2.txt");
+    Game(std::string file="empty.txt");
     ~Game();
 		void selectPlayer();
     std::vector<std::string> getDirections() const;

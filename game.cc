@@ -269,7 +269,10 @@ void Game::endTurn() {
 void Game::toggleFreeze()
 {
     isFrozen = !isFrozen;
-		action = "Freeze! ";
+		if (isFrozen)
+			action = "Freeze! ";
+		else
+			action = "Unfreeze! ";
 }
 
 void Game::readFloorMode()
