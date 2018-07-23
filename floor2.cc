@@ -5,6 +5,13 @@
 #include "treasure.h"
 #include "enemy.h"
 
+#include "human.h"
+#include "dwarf.h"
+#include "halfling.h"
+#include "elf.h"
+#include "orc.h"
+#include "merchant.h"
+
 #include <vector>
 #include <iostream>
 
@@ -42,6 +49,12 @@ Floor::Floor(vector<vector<char>> plan) {
 		}
 		theFloor.push_back(row);
 	}
+    
+    vector<Cell*> chamberrow;
+    for (int i=0; i<5; i++)
+    {
+        chambers.push_back(chamberrow);
+    }
 }
 
 Floor::~Floor() {
@@ -222,6 +235,40 @@ void Floor::spawnGold()
     }
 }
 
+/*
+void Floor::spawnEnemies()
+{
+    for (int i=0; i<20; i++)
+    {
+        int whichChamber = rand() % 5;
+        int whichCell = rand() % chambers[whichChamber].size();
+        int whichEnemy = rand() % 18;
+        Enemy* enemy;
+        if (!(chambers[whichChamber][whichCell]->getObject()))
+        {
+            if (whichEnemy < 4) // 2/9 human
+                enemy = new Human();
+            else if (whichEnemy < 7) // 3/18 dwarf
+                enemy = new Dwarf();
+            else if (whichEnemy < 12) // 5/18 halfling
+                enemy = new Halfling();
+            else if (whichEnemy < 14) // 1/9 elf
+                enemy = new Elf();
+            else if (whichEnemy < 16) // 1/9 orc
+                enemy = new Orc();
+            else
+                enemy = new Merchant();
+            chambers[whichChamber][whichCell]->setObject(enemy);
+            enemy->setCell(chambers[whichChamber][whichCell]);
+            mobs.emplace_back(enemy);
+        }
+        else
+        {
+            i--; // occupied, try again
+        }
+    }
+}*/
+
 void Floor::spawn()
 {
     // choose chamber for player
@@ -240,7 +287,7 @@ void Floor::spawn()
     spawnGold();
     //spawnEnemies(); // append to mob vector
     
-    for (int i = 0; i < 30; i ++) {
+    for (int i = 0; i < 25; i ++) {
         for (int j = 0; j < 79; j ++) {
             for (int di = -1; di <= 1; di ++) {
                 for (int dj = -1; dj <= 1; dj ++) {
@@ -257,5 +304,13 @@ void Floor::spawn()
                 }
             }
         }
+    }
+}
+
+void Floor::mobAct()
+{
+    for (int i=0; i<mobs.size(); i++)
+    {
+        mobs[i]->act();
     }
 }
