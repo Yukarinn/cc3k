@@ -14,3 +14,11 @@ Merchant::beStruckBy(Character &other) {
 void Merchant::defeat() {
 
 }
+
+// initialize static bool
+bool Merchant::aggro = false;
+
+static void setAggro()
+{
+    aggro = true;
+}
