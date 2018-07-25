@@ -2,8 +2,8 @@
 #define TROLL_H
 #include "player.h"
 class Troll: public Player {
-	public: 
-		Troll();
-		~Troll();
+public: 
+    Troll();
+    ~Troll();
 };
 #endif

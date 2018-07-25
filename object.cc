@@ -8,17 +8,17 @@ Object::Object(ObjectType type, char display): type{type}, display{display} {}
 Object::~Object() {}
 
 ObjectType Object::getType() {
-	return type;
+    return type;
 }
 
 Cell* Object::getCell() const {
-	return cell;
+    return cell;
 }
 
 void Object::setCell(Cell* cell) {
-	this->cell = cell;
+    this->cell = cell;
 }
 
 char Object::getDisplay() const {
-	return display;
+    return display;
 }

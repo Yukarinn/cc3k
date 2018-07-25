@@ -13,29 +13,29 @@ Character::Character(string name, char display, int hp, int atk, int def, Object
 Character::~Character() {}
 
 void Character::setHp(int hp) {
-	this->hp = hp;
+    this->hp = hp;
 }
 
 void Character::setAtk(int atk) {
-	this->atk = atk;
+    this->atk = atk;
 }
 
 void Character::setDef(int def) {
-	this->def = def;
+    this->def = def;
 }
 
 string Character::getName() const {
-	return name;
+    return name;
 }
 int Character::getHp() const {
-	return hp;
+    return hp;
 }
 
 int Character::getAtk() const {
-	return atk;
+    return atk;
 }
 
 int Character::getDef() const {
-	return def;
+    return def;
 }
 

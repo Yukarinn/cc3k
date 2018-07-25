@@ -9,13 +9,13 @@ class Cell;
 class Enemy;
 
 class Player: public Character {
-	protected:
-		Treasure* onHoard = nullptr;
+protected:
+    Treasure* onHoard = nullptr;
     int maxHp;
     int baseAtk;
     int baseDef;
     int gold = 0;
-	public:
+public:
     Player(std::string name, int hp, int atk, int def, int max_hp, int base_hp, int base_def);
     ~Player();
     void reset();
@@ -25,12 +25,12 @@ class Player: public Character {
     int getGold() const;
     void setGold(int gold);
     void die();
-		std::string move(Cell* cell);
-		bool pick(Treasure* treasure);
-		virtual void drink(Potion* potion);
-		std::string spot();
-		std::string strike(Enemy* enemy);
-		std::string grab(Cell* cell);
+    std::string move(Cell* cell);
+    bool pick(Treasure* treasure);
+    virtual void drink(Potion* potion);
+    std::string spot();
+    std::string strike(Enemy* enemy);
+    std::string grab(Cell* cell);
 };
 
 #endif

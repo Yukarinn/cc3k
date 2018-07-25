@@ -4,9 +4,9 @@
 
 class Potion;
 class Drow: public Player {
-	public: 
-		Drow();
-		~Drow();
-		void drink(Potion* potion) override;
+public: 
+    Drow();
+    ~Drow();
+    void drink(Potion* potion) override;
 };
 #endif

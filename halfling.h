@@ -3,8 +3,8 @@
 #include "enemy.h"
 
 class Halfling: public Enemy {
-	public: 
-		Halfling();
-		~Halfling();
+public: 
+    Halfling();
+    ~Halfling();
 };
 #endif

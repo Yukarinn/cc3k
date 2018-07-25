@@ -3,10 +3,9 @@
 #include "enemy.h"
 #include <string>
 
-
 class Dwarf: public Enemy {
-	public: 
-		Dwarf();
-		~Dwarf();
+public:
+    Dwarf();
+    ~Dwarf();
 };
 #endif

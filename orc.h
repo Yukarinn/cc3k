@@ -6,9 +6,9 @@
 
 class Goblin;
 class Orc: public Enemy {
-	public: 
-		Orc();
-		~Orc();
-		std::pair<bool, std::string> strike(Goblin& other);
+public: 
+    Orc();
+    ~Orc();
+    std::pair<bool, std::string> strike(Goblin& other);
 };
 #endif

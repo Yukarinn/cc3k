@@ -2,8 +2,8 @@
 #define ELF_H
 #include "enemy.h"
 class Elf: public Enemy {
-	public: 
-		Elf();
-		~Elf();
+public: 
+    Elf();
+    ~Elf();
 };
 #endif

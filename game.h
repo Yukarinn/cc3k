@@ -8,14 +8,14 @@ class Player;
 class Cell;
 
 class InvalidAction: public std::exception {
-	virtual const char* what() const throw() {
-		return "Invalid Action";
-	}
+    virtual const char* what() const throw() {
+        return "Invalid Action";
+    }
 };
 
 class Game {
     std::vector<Floor*> floors;
-		Player* player;
+    Player* player;
     std::string action = "Player character has spawned." ;
     int level;
     
@@ -23,12 +23,12 @@ class Game {
     std::vector<std::string> races = {"shade", "drow", "vampire", "troll", "goblin"};
     
     bool isFrozen = false;
-		bool gameOver = false;
-		bool isHidden = false; // DLC    
+    bool gameOver = false;
+    bool isHidden = false; // DLC    
 public:
     Game(std::string file="empty.txt");
     ~Game();
-		void selectPlayer();
+    void selectPlayer();
     std::vector<std::string> getDirections() const;
     std::vector<std::string> getRaces() const;
     void startLevel();
@@ -36,20 +36,20 @@ public:
     void nextLevel();
     void endGame(); // display the scoreboard 
     void endTurn();
-		void toggleFreeze();
-		bool isGameOver();    
+    void toggleFreeze();
+    bool isGameOver();    
     Player *getPlayer() const;
-		void showFinal();
-		void usePotion(std::string direction);
+    void showFinal();
+    void usePotion(std::string direction);
     void playerAttack(std::string direction);
     void playerMove(std::string direction);
-		void mobAct();  
-		void toggleHidden();
+    void mobAct();  
+    void toggleHidden();
 private:
-		std::string getFullDirection(std::string dir); 	
+    std::string getFullDirection(std::string dir); 	
     void newPlayer(char player);
-		Cell *findCell(std::string direction);
-		std::string displayMenu();
+    Cell *findCell(std::string direction);
+    std::string displayMenu();
 };
 
 #endif

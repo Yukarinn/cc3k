@@ -3,9 +3,9 @@
 #include "player.h"
 
 class Shade: public Player {
-	public: 
-		Shade();
-		~Shade();
+public: 
+    Shade();
+    ~Shade();
 };
 
 #endif

@@ -3,9 +3,9 @@
 #include "object.h"
 
 class Item: public Object {
-	public:
-		Item(ObjectType type, char display);
-		virtual ~Item();
+public:
+    Item(ObjectType type, char display);
+    virtual ~Item();
 };
 
 #endif
