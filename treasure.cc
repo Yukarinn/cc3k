@@ -17,13 +17,13 @@ void Treasure::setTreasureType(TreasureType treasureType) {
 
 string Treasure::getName() {
 	switch(treasureType) {
-		case TreasureType::NO:
+		case TreasureType::NO:  // normal
 			return "2 gold";
-		case TreasureType::SM:
+		case TreasureType::SM:  // small
 			return "1 gold";
-		case TreasureType::HN:
+		case TreasureType::HN:  // dragon hoard
 			return "6 gold";
-		case TreasureType::ME:
+		case TreasureType::ME:  // merchant
 			return "4 gold";
 	}
 	return "";

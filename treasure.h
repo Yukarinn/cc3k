@@ -14,6 +14,9 @@ class Treasure: public Item {
 		~Treasure();
 		TreasureType getTreasureType() const;
 		void setTreasureType(TreasureType treasureType);
+    // get the value of the treasure (in string)
+    // to display to the player
+    // so the player knows how much gold it is
 		std::string getName();	
 };
 
