@@ -8,10 +8,10 @@ enum class ObjectType {
 };
 
 class Object {
-		char display;
+		char display; // character to display on map
 	protected:
 		ObjectType type;
-		Cell* cell;
+		Cell* cell; // cell this object is on
 	public:
 		Object(ObjectType type, char display);
 		virtual ~Object();		

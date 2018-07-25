@@ -18,6 +18,7 @@ Terrain Cell::getTerrain() const {
 	return terrain;
 }
 
+// a player can move to this cell if it is stairs, a chamber tile, or a passage tile that is empty or has gold on it
 bool Cell::canMoveTo() const {
 	if (terrain != Terrain::Stairs && terrain != Terrain::Door && terrain != Terrain::Chamber && terrain != Terrain::Passage)
 		return false;
@@ -30,6 +31,8 @@ bool Cell::canMoveTo() const {
 	return true;
 }
 
+
+// enemies can only move to cells in their chamber, or block the door as long as these are non-empty
 bool Cell::enemyCanMoveTo() const {
 	if (terrain != Terrain::Door && terrain != Terrain::Chamber)
 		return false;
