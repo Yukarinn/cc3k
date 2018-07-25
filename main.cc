@@ -75,10 +75,12 @@ int main(int argc, char *argv[]) {
 				else if (buf == "q") { // quit command
 					delete game;
 					break;
-				} else {
-					continue;
 				}
-				
+				else if (buf == "h") { // turn on hidden DLC!
+					game->toggleHidden();
+				}	
+				else
+					continue;
 				// game can end when player reaches stairs or hp drops below 0
 				if (game->isGameOver()) {  // reached stairs?
 					game->showFinal();

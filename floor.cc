@@ -202,12 +202,12 @@ bool Floor::canSee(Cell* other) {
 } 
 
 // draws each tile of the map
-string Floor::draw() {
+string Floor::draw(bool isHidden) { // isHidden true is DLC
 	string ret = "";
 	for (int i = 0; i < 25; i ++) {
 		for (int j = 0; j < 79; j ++) {
 			Cell* cell = theFloor[i][j];
-			if (!canSee(cell)) { // if the player can't see the cell, draw empty
+			if (isHidden && !canSee(cell)) { // if the player can't see the cell, draw empty (DLC)
 				ret += " ";
 			}
 			else if (cell->getTerrain() == Terrain::WallV) {
@@ -516,3 +516,4 @@ string Floor::mobAct()
     }
 		return ret;
 }
+

@@ -96,7 +96,7 @@ vector<string> Game::getRaces() const {
 }
 
 void Game::draw() {
-    cout << floors[level - 1]->draw() << endl;
+    cout << floors[level - 1]->draw(isHidden) << endl;
 		cout << displayMenu() << endl;
 }
 
@@ -318,4 +318,12 @@ void Game::showFinal() {
 	}
 	cout << "THE GAME IS DONE! YOUR SCORE WAS: " + to_string(score) << endl;
 	cout << "RESTART(r) or QUIT(q)?" << endl;
+}
+
+void Game::toggleHidden() {
+	isHidden = !isHidden;
+	if (isHidden) 
+		action = "Spooky hidden mode is on! ";
+	else
+		action = "Spooky hidden mode is off! ";
 }

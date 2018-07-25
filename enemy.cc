@@ -16,6 +16,11 @@ string Enemy::act() {
 		Player* player = dynamic_cast<Player*>(findPlayer()->getObject());
 		return strike(player);
 	}
+	move();
+	return "";
+}
+
+void Enemy::move() {
 	Cell* cell = this->getCell();
 	vector<Cell*> neighbours = cell->getNeighbours();
 	int r = rand() % neighbours.size();
@@ -25,14 +30,13 @@ string Enemy::act() {
 			free = true;
 	}
 	if (!free)
-		return "";
+		return;
 	while (!neighbours[r]->enemyCanMoveTo()) {
 		r = rand() % neighbours.size();
 	}
 	neighbours[r]->setObject(this);
 	cell->clearObject();
 	this->setCell(neighbours[r]);
-	return "";
 }
 
 Cell* Enemy::findPlayer() {
@@ -58,8 +62,6 @@ void Enemy::drop() { //call before delete
 	treasure->setCell(cell);
 	this->cell = nullptr;
 }
-
-
 
 string Enemy::strike(Player* other) {
 	int times = 1;

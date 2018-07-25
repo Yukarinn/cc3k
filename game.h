@@ -24,7 +24,7 @@ class Game {
     
     bool isFrozen = false;
 		bool gameOver = false;
-    
+		bool isHidden = false; // DLC    
 public:
     Game(std::string file="empty.txt");
     ~Game();
@@ -44,6 +44,7 @@ public:
     void playerAttack(std::string direction);
     void playerMove(std::string direction);
 		void mobAct();  
+		void toggleHidden();
 private:
 		std::string getFullDirection(std::string dir); 	
     void newPlayer(char player);

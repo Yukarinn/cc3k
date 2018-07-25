@@ -20,7 +20,7 @@ class Floor {
 public:
     Floor(std::vector<std::vector<char>> plan);
     ~Floor();
-    std::string draw();  // draws the entire map, (bonus dlc based on what player can see)
+    std::string draw(bool isHidden);  // draws the entire map, (bonus dlc based on what player can see)
     void setPlayer(Player* player);
     Player* getPlayer();
     void setup();
@@ -35,7 +35,6 @@ private:
     void spawnPotions();
     void spawnGold();
     void spawnEnemies();
-
 };
 
 #endif
