@@ -30,5 +30,7 @@ class Player: public Character {
 		virtual void drink(Potion* potion);
 		std::string spot();
 		std::string strike(Enemy* enemy);
+		std::string grab(Cell* cell);
 };
+
 #endif

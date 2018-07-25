@@ -15,9 +15,11 @@
 
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
+// instantiates based on a floor plan
 Floor::Floor(vector<vector<char>> plan) {
 	for (int i = 0; i < 25; i ++) {
 		vector<Cell*> row;
@@ -45,7 +47,7 @@ Floor::Floor(vector<vector<char>> plan) {
 				case '\\':
 					cell = new Cell(Terrain::Stairs, i, j);
 					break;
-				default:
+				default: // any of the following objects means we are using a custom nonempty map
 					custom = true;
 					cell = new Cell(Terrain::Chamber, i, j);
 					Object* obj = nullptr;
@@ -122,28 +124,93 @@ Floor::Floor(vector<vector<char>> plan) {
 		}
 		theFloor.emplace_back(row);
 	}
-	cout << "*** done reading in from layout ***" << endl;
 }
 
+// do not need to delete the player,
+// up to the game object to delete
+// since the player is the same for each floor
 Floor::~Floor() {
 	for (auto row: theFloor) {
 		for (auto cell: row) {
+			// don't delete player, enemies or we will have dangling pointers
 			if (cell->getObject() && (cell->getObject()->getType() == ObjectType::Enemy || cell->getObject()->getType() == ObjectType::Player)) 
 				cell->clearObject();
 			delete cell;
 		}
 	}
+	// mobs are held in limbo when they die
+	// until they are deleted here
 	for (auto each: mobs) {
 		delete each;
 	}
 }
 
+// is the cell next to a chamber of the given number?
+bool Floor::nextToChamber(Cell* cell, int chamber) {
+	vector<Cell*> neighbours = cell->getNeighbours();
+	for (auto each: neighbours) {
+		if (layout[each->getPos().first][each->getPos().second] == chamber)
+			return true;
+	}
+	return false;
+}
+
+bool Floor::canSee(Cell* other) {
+	Cell* cell = player->getCell();
+	pair<int, int> pos1 = cell->getPos();
+	pair<int, int> pos2 = other->getPos();
+	if (seen[pos2.first][pos2.second])
+		return true;
+
+	// neighbours of cell to see
+	vector<Cell*> neighbours = other->getNeighbours();
+	vector<Cell*> thisNeighbours = cell->getNeighbours();	
+	// at a chamber cell?
+	if (cell->getTerrain() == Terrain::Chamber) {
+		//is in the same chamber?
+		if (layout[pos1.first][pos1.second] == layout[pos2.first][pos2.second]) {
+			seen[pos2.first][pos2.second] = true;
+			return true;
+		}
+		//we can see the walls and doors which are next to some par tof the chamber
+		if (nextToChamber(other, layout[pos1.first][pos1.second])) {
+			seen[pos2.first][pos2.second] = true;
+			return true;
+		}
+	}
+	// at a door cell?
+	// can see other cell if you are next to some cell of the same chamber
+	// and you can see walls next to any of those cells
+	if (cell->getTerrain() == Terrain::Door) {
+		for (auto each: thisNeighbours) {
+			if (each->getTerrain() == Terrain::Chamber) {
+				pair<int, int> pos = each->getPos();
+				int chamberNum = layout[pos.first][pos.second];
+				if (chamberNum == layout[pos2.first][pos2.second] || nextToChamber(other, chamberNum)) {
+					seen[pos2.first][pos2.second] = true;
+					return true;
+				}
+			}
+		}
+	}
+	// otherwise, we can only see our neighbours
+	if (find(neighbours.begin(), neighbours.end(), cell) != neighbours.end() && other->getTerrain() != Terrain::WallV && other->getTerrain() != Terrain::WallH) {
+		seen[pos2.first][pos2.second] = true;
+		return true;
+	}
+	return false;
+} 
+
+// draws each tile of the map
 string Floor::draw() {
 	string ret = "";
 	for (int i = 0; i < 25; i ++) {
 		for (int j = 0; j < 79; j ++) {
 			Cell* cell = theFloor[i][j];
-			if (cell->getTerrain() == Terrain::WallV) {
+			if (!canSee(cell)) { // if the player can't see the cell, draw empty
+				ret += " ";
+			}
+			else if (cell->getTerrain() == Terrain::WallV) {
 				ret += "|";
 			}
 			else if (cell->getTerrain() == Terrain::WallH) {
@@ -175,7 +242,7 @@ string Floor::draw() {
 
 void Floor::setPlayer(Player* player) {
 	this->player = player;
-	if (custom) {
+	if (custom) { // we've already read in the location of the player, just set the player instead of spawning
 		customPlayerCell->setObject(player);
 		player->setCell(customPlayerCell);	
 	}
@@ -186,6 +253,8 @@ Player* Floor::getPlayer() {
 }
 
 
+// helper to number the chambers
+// straightforward DFS
 void Floor::floodfill(int i, int j, int chamber) {
     if (i < 0 || j < 0 || i >= 25 || j >= 79)
         return;
@@ -205,10 +274,18 @@ void Floor::setup() {
     
     for (int i = 0; i < 25; i ++) {
         vector<int> row(79);
-        for (int j = 0; j < 79; j ++)
+				vector<bool> seenRow(79);
+        for (int j = 0; j < 79; j ++) {
             row[j] = 0;
+						seenRow[j] = 0;
+						if (i == 0 || i == 24 || j == 0 || j == 78) // we can always see the borders
+							seenRow[j] = 1;
+				}
         layout.emplace_back(row);
+				seen.emplace_back(seenRow);
     }
+		
+		// label the chambers
     for (int i = 0; i < 25; i ++) {
         for (int j = 0; j < 79; j ++) {
             if (layout[i][j] != 0)
@@ -222,11 +299,9 @@ void Floor::setup() {
     }
     for (int i = 0; i < 25; i ++) {
         for (int j = 0; j < 79; j ++)  {
-            if (layout[i][j] == -1)
+            if (layout[i][j] == -1) // convention, set non chamber to 0
                 layout[i][j] = 0;
-            //cout << layout[i][j];
         }
-        //cout << endl;
     }
     for (int i = 0; i < 5; i++) {
         vector<Cell*> row;
@@ -242,6 +317,8 @@ void Floor::setup() {
         }
     }
     
+		// initiate neighbours, 
+		// only non-walls need neighbours
     for (int i = 0; i < 25; i ++) {
         for (int j = 0; j < 79; j ++) {
             for (int di = -1; di <= 1; di ++) {
@@ -260,13 +337,13 @@ void Floor::setup() {
             }
         }
     }
-		if (custom) {
+		if (custom) { // need to set dragon -> hoard connections if custom map
 			for (int i = 0; i < 25; i ++) {
 				for (int j = 0; j < 79; j++) {
 					if (theFloor[i][j]->getObject() && theFloor[i][j]->getObject()->getDisplay() == 'D') {
 						Dragon* dragon = dynamic_cast<Dragon*>(theFloor[i][j]->getObject());
 						vector<Cell*> neighbours = theFloor[i][j]->getNeighbours();
-						for (auto neighbour: neighbours) {
+						for (auto neighbour: neighbours) { // where is the treasure? must be a neighbour
 							if (neighbour->getObject() && neighbour->getObject()->getType() == ObjectType::Treasure) {
 								Treasure* treasure = dynamic_cast<Treasure*>(neighbour->getObject());
 								if (treasure->getTreasureType() == TreasureType::HD) {
@@ -278,7 +355,6 @@ void Floor::setup() {
 				}
 			}
 		}
-	cout << "*** done setup ***" << endl;
 }
 
 void Floor::spawnPlayer(int chamberNum)
@@ -288,7 +364,7 @@ void Floor::spawnPlayer(int chamberNum)
     cell->setObject(player);
 		player->setCell(cell);
 }
-
+																															
 void Floor::spawnStairs(int chamberNum)
 {
     int whichCell = rand() % chambers[chamberNum].size(); // choose cell
@@ -333,20 +409,20 @@ void Floor::spawnGold()
         Cell* cell = chambers[whichChamber][whichCell];
         if (cell->getTerrain() == Terrain::Chamber && cell->getObject() == nullptr)
         {
-            if (whichTreasure % 2 == 0 || whichTreasure == 1) // 5/8 chance
+            if (whichTreasure % 2 == 0 || whichTreasure == 1) // 5/8 chance, normal hoard
                 treasure = new Treasure(TreasureType::NO);
-            else if (whichTreasure == 3) { // 1/8 chance
+            else if (whichTreasure == 3) { // 1/8 chance, dragon hoard
                 treasure = new Treasure(TreasureType::HD);
 								bool free = false;
-								vector<Cell*> neighbours = cell->getNeighbours();
+								vector<Cell*> neighbours = cell->getNeighbours(); // see if there is a free cell nearby to spawn a dragon
 								for (auto neighbour: neighbours) {
 									if (neighbour->getTerrain() == Terrain::Chamber && neighbour->getObject() == nullptr)
 										free = true;
 								}
-								if (!free) {
+								if (!free) { // can't place, try again
 									i--;
 								} else {
-									int whichCell = rand() % neighbours.size();
+									int whichCell = rand() % neighbours.size(); // spawn dragon in free cell neighbour
 									while (neighbours[whichCell]->getTerrain() != Terrain::Chamber || neighbours[whichCell]->getObject() != nullptr)
 										whichCell = rand() % neighbours.size();
 									Dragon* dragon = new Dragon();
@@ -422,9 +498,9 @@ void Floor::spawn()
     spawnGold();
     spawnEnemies();
     
-    cout << "*** done spawning ***" << endl;
 }
 
+// after the player acts, each mob/enemy must act
 string Floor::mobAct()
 {
 		string ret = "";

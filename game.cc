@@ -259,7 +259,8 @@ void Game::mobAct() {
 
 // actions at the end of each "turn"
 // check if player died, trolls heal
-// 5 at the end of each turn
+// 5 at the end of each turn, grab
+// any gold that dragon was guarding
 void Game::endTurn() {
 	if (player->getHp() == 0) {
 		gameOver = true;
@@ -272,6 +273,7 @@ void Game::endTurn() {
 			action += "PC heals 5 HP passively. ";
 		}
 	}
+	action += player->grab(player->getCell());
 }
 
 

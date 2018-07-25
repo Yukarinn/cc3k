@@ -12,7 +12,7 @@ Drow::~Drow() {}
 void Drow::drink(Potion* potion) {
 	switch(potion->getPotionType()) {
 		case PotionType::RH:
-			setHp(getHp() + 15);
+			setHp(min(getMaxHp(), getHp() + 15));
 			break;
 		case PotionType::BA:
 			setAtk(getAtk() + 15);
@@ -21,7 +21,7 @@ void Drow::drink(Potion* potion) {
 			setDef(getDef() + 15);
 			break;
 		case PotionType::PH:
-			setHp(getHp() - 15);
+			setHp(max(0, getHp() - 15));
 			break;
 		case PotionType::WA:
 			setAtk(max(getAtk() - 15, 0));

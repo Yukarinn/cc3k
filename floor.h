@@ -13,8 +13,9 @@ class Floor {
     Player * player;
 		Cell * customPlayerCell = nullptr;
     std::vector<std::vector<int>> layout;
+		std::vector<std::vector<bool>> seen;
     std::vector<std::vector<Cell *>> chambers;
-    std::vector<Enemy*> mobs;    
+    std::vector<Enemy*> mobs; 
 		bool custom = false;    
 public:
     Floor(std::vector<std::vector<char>> plan);
@@ -26,6 +27,8 @@ public:
     void spawn(); // spawn everything
 		std::string mobAct();
 private:
+		bool nextToChamber(Cell* other, int chamber);
+		bool canSee(Cell* other);
     void floodfill(int i, int j, int chamber);
 		void spawnPlayer(int chamberNum);
     void spawnStairs(int chamberNum);

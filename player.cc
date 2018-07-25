@@ -100,18 +100,22 @@ string Player::move(Cell* cell) {
 		prev->setObject(onHoard);
 		onHoard = nullptr;
 	}
-	if (cell->getObject() && cell->getObject()->getType() == ObjectType::Treasure) {
+	ret += grab(cell);
+	cell->setObject(this);
+	this->setCell(cell);
+	return ret;
+}
+
+string Player::grab(Cell* cell) {
+	string ret = "";
+		if (cell->getObject() && cell->getObject()->getType() == ObjectType::Treasure) {
 		Treasure* treasure = dynamic_cast<Treasure*>(cell->getObject());
 		string name = treasure->getName();
 		if (pick(treasure))
 			ret = "picks up " + name;
 	}
-	cell->setObject(this);
-	this->setCell(cell);
-
 	return ret;
 }
-
 string Player::spot() {
 	string ret = "";
 	Cell* cell = this->cell;
@@ -132,7 +136,7 @@ string Player::spot() {
 string Player::strike(Enemy* enemy) {
 	int damage = ceil((100.0/(100.0 + enemy->getDef())) * atk);
 	if (enemy->getName() == "Halfling" && rand() % 2) {
-		return "PC's attack on the halfling missed. ";
+		return "PC's attack on the halfling missed (" + to_string(enemy->getHp()) + "HP). ";
 	}
 	if (enemy->getDisplay() == 'M') {
 		Merchant::setAggro(true);	
