@@ -10,6 +10,7 @@
 #include "troll.h"
 #include "potion.h"
 #include "treasure.h"
+#include "merchant.h"
 
 #include <fstream>
 #include <iostream>
@@ -20,6 +21,7 @@ using namespace std;
 
 
 // reads 5 floors from file
+// reset global static flags for merchants/potions
 Game::Game(string file) {
     ifstream F{file};
     string line;
@@ -36,6 +38,8 @@ Game::Game(string file) {
         floors.push_back(new Floor(plan));
     }
     level = 1;
+		Potion::clearSeen();
+		Merchant::setAggro(false);
 }
 
 
@@ -273,7 +277,10 @@ void Game::endTurn() {
             action += "PC heals 5 HP passively. ";
         }
     }
-    action += player->grab(player->getCell());
+		string pick = player->grab(player->getCell());
+    if (pick != "") {
+			action += "Player " + pick + ". ";
+		}
 }
 
 
@@ -288,7 +295,7 @@ void Game::toggleFreeze()
 
 string Game::displayMenu(){
     stringstream menu;
-    menu  << "Race: "  << player->getName() << "\tGold " << player->getGold();
+    menu  << "Race: "  << player->getName() << "\tGold: " << player->getGold();
     
     menu << "\t\t\t\t\t\t";
     

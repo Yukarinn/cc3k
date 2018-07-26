@@ -19,6 +19,7 @@ public:
     std::string getEffect() const;
     // if the potion is used, player can see it
     static void see(PotionType potionType);
+		static void clearSeen();
 };
 
 #endif

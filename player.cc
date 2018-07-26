@@ -44,7 +44,7 @@ void Player::reset() {
 void Player::drink(Potion* potion) {
     switch(potion->getPotionType()) {
         case PotionType::RH:
-            if (name == "Vampire")
+            if (name == "Vampire") // edge case for vampire who has no max hp
                 setHp(getHp() + 10);
             else
                 setHp(min(maxHp, getHp() + 10));
@@ -68,7 +68,8 @@ void Player::drink(Potion* potion) {
     delete potion;
 }
 
-bool Player::pick(Treasure* treasure) {
+// gets gold and deletes treasure
+bool Player::pick(Treasure* treasure) { 
     switch (treasure->getTreasureType()) {
         case TreasureType::SM:
             gold ++;
@@ -92,11 +93,14 @@ bool Player::pick(Treasure* treasure) {
     }
 }
 
+// when moving, first check if there is
+// treasure to be picked up, if so,
+// grab it first
 string Player::move(Cell* cell) {
     string ret =  "";
     Cell* prev = this->cell;
     prev->clearObject();
-    if (onHoard) {
+    if (onHoard) { // if the player was on hoard spot previous turn, put but hoard into the cell
         prev->setObject(onHoard);
         onHoard = nullptr;
     }
@@ -106,16 +110,30 @@ string Player::move(Cell* cell) {
     return ret;
 }
 
+
+// grabs treasure,
+// if parameter argument is own cell
+// try to grab the dragon hoard
 string Player::grab(Cell* cell) {
     string ret = "";
-    if (cell->getObject() && cell->getObject()->getType() == ObjectType::Treasure) {
+    if (this->cell != cell && cell->getObject() && cell->getObject()->getType() == ObjectType::Treasure) {
         Treasure* treasure = dynamic_cast<Treasure*>(cell->getObject());
         string name = treasure->getName();
         if (pick(treasure))
             ret = "picks up " + name;
     }
+		if (this->cell == cell && onHoard && onHoard->getTreasureType() == TreasureType::HN) {
+			ret = "picks up " + onHoard->getName();
+			delete onHoard;
+			onHoard = nullptr;
+			gold += 6;	
+			cell->setObject(this);
+		}
     return ret;
 }
+
+
+// spots nearby potions
 string Player::spot() {
     string ret = "";
     Cell* cell = this->cell;
@@ -125,7 +143,7 @@ string Player::spot() {
             ret += "a " + dynamic_cast<Potion*>(each->getObject())->getEffect() + ", ";		
         }
     }
-    if (ret != "") {
+    if (ret != "") { //return string shouldn't have ending comma
         ret.pop_back();
         ret.pop_back();
     }
@@ -133,17 +151,19 @@ string Player::spot() {
 }
 
 
+// damage calculations
+// accounting for different player/enemy interactions
 string Player::strike(Enemy* enemy) {
     int damage = ceil((100.0/(100.0 + enemy->getDef())) * atk);
     if (enemy->getName() == "Halfling" && rand() % 2) {
-        return "PC's attack on the halfling missed (" + to_string(enemy->getHp()) + "HP). ";
+        return "PC's attack on the halfling missed (" + to_string(enemy->getHp()) + " HP). ";
     }
     if (enemy->getDisplay() == 'M') {
         Merchant::setAggro(true);	
     }
     enemy->setHp(max(0, enemy->getHp() - damage));
     
-    string ret = "PC deals " + to_string(damage) + " damage to " + enemy->getDisplay() + " (" + to_string(enemy->getHp()) + "HP). ";
+    string ret = "PC deals " + to_string(damage) + " damage to " + enemy->getName() + " (" + to_string(enemy->getHp()) + " HP). ";
     if (name == "Vampire") {
         if (enemy->getName() == "Dwarf") {
             ret += "Lost 5 HP. ";

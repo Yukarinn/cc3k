@@ -11,6 +11,8 @@ Enemy::Enemy(string name, char display, int hp, int atk, int def): Character(nam
 
 Enemy::~Enemy() {}
 
+// if player is adjacent, hit the player
+// otherwise move rnadomly
 string Enemy::act() {
 	if (findPlayer() != nullptr) {
 		Player* player = dynamic_cast<Player*>(findPlayer()->getObject());
@@ -20,16 +22,18 @@ string Enemy::act() {
 	return "";
 }
 
+// moves the enemy mob to a random free neighbour
+// if possible
 void Enemy::move() {
 	Cell* cell = this->getCell();
 	vector<Cell*> neighbours = cell->getNeighbours();
 	int r = rand() % neighbours.size();
-	bool free = false;
+	bool free = false; // any free neighbours?
 	for (auto each: neighbours) {
 		if (each->enemyCanMoveTo())
 			free = true;
 	}
-	if (!free)
+	if (!free) // can't move
 		return;
 	while (!neighbours[r]->enemyCanMoveTo()) {
 		r = rand() % neighbours.size();
@@ -39,6 +43,8 @@ void Enemy::move() {
 	this->setCell(neighbours[r]);
 }
 
+// finds player cell if one of the neighbours
+// else returns nullptr
 Cell* Enemy::findPlayer() {
 	Cell* cell = this->getCell();
 	for (Cell* each: cell->getNeighbours()) {
@@ -49,6 +55,10 @@ Cell* Enemy::findPlayer() {
 	return nullptr;
 }
 
+// drops treasure, then clears enemy cell to nullptr to
+// effectively deactivate the enemy
+// until floor deletion to avoid dangling
+// pointers
 void Enemy::drop() { //call before delete
 	Cell* cell = this->cell;
 	cell->clearObject();

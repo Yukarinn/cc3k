@@ -10,7 +10,7 @@ class Enemy;
 
 class Player: public Character {
 protected:
-    Treasure* onHoard = nullptr;
+    Treasure* onHoard = nullptr; // player can walk on top of a dragon hoard if the dragon is still alive, so this is temp location for hoad
     int maxHp;
     int baseAtk;
     int baseDef;

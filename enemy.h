@@ -11,7 +11,6 @@ class Enemy: public Character {
 		std::string strike(Player* other);
 	protected:
 		Cell* findPlayer();
-	private:
 		void move();
 };
 

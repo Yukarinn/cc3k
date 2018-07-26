@@ -27,6 +27,7 @@ void Character::setDef(int def) {
 string Character::getName() const {
     return name;
 }
+
 int Character::getHp() const {
     return hp;
 }

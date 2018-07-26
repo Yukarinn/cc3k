@@ -34,7 +34,7 @@ bool Cell::canMoveTo() const {
 
 // enemies can only move to cells in their chamber, or block the door as long as these are non-empty
 bool Cell::enemyCanMoveTo() const {
-    if (terrain != Terrain::Door && terrain != Terrain::Chamber)
+    if (terrain != Terrain::Chamber)
         return false;
     if (!obj)
         return true;

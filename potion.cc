@@ -40,3 +40,7 @@ void Potion::see(PotionType potionType) {
     // add the new potion that player used too the seen list
     Potion::seen.emplace_back(potionType);
 }
+
+void Potion::clearSeen() {
+	seen.clear();
+}
